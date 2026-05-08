@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build (VSCode + Zed)
+        run: npm run build
+
+      - name: Validate Zed JSON against v0.2.0 schema
+        run: npm run validate
+
+      - name: APCA contrast check
+        run: npm run check:contrast
+
+      - name: Tests
+        run: npm test

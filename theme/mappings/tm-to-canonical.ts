@@ -126,7 +126,8 @@ export const TM_TO_CANONICAL: Record<string, ZedSyntaxKey | VSCodeOnly> = {
   'entity.name.function': 'function',
   'keyword.control.flow': 'keyword',
   'keyword.control.export': 'keyword',
-  'keyword.control.import, keyword.control.from': 'keyword', // comma-separated TM selector
+  'keyword.control.import': 'keyword',
+  'keyword.control.from': 'keyword',
   'keyword.operator': 'operator',
   'storage.type.function': 'keyword',
   'storage.type.function.arrow': 'operator',
