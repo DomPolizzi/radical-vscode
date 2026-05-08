@@ -1,0 +1,55 @@
+APCA contrast report (Bronze thresholds)
+
+PASS: 9/20
+
+  ✗ comment                      Lc= 33.44  min=60  (need +26.56)
+  ✓ constant                     Lc= 98.77  min=60
+  ✓ entity                       Lc= 81.52  min=60
+  ✗ keyword                      Lc= 31.43  min=60  (need +28.57)
+  ✗ markup                       Lc= 58.27  min=60  (need +1.73)
+  ✗ storage                      Lc= 51.58  min=60  (need +8.42)
+  ✓ string                       Lc= 96.49  min=60
+  ✗ support                      Lc= 55.21  min=60  (need +4.79)
+  ✓ variable                     Lc= 79.62  min=60
+  ✓ fgPrimary                    Lc= 79.62  min=75
+  ✗ fgMuted                      Lc= 58.27  min=60  (need +1.73)
+  ✗ aiCompletionPreview          Lc= 21.87  min=30  (need +8.13)
+  ✗ parameterAnnotation          Lc= 16.08  min=30  (need +13.92)
+  ✗ error                        Lc= 38.05  min=60  (need +21.95)
+  ✓ warning                      Lc= 80.46  min=60
+  ✓ info                         Lc= 79.12  min=60
+  ✓ vcs.added                    Lc= 91.83  min=45
+  ✓ vcs.modified                 Lc= 67.84  min=45
+  ✗ vcs.deleted                  Lc= 41.71  min=45  (need +3.29)
+  ✗ fgPlaceholder                Lc= 20.95  min=30  (need +9.05)
+
+FAILED: 11
+  comment: Lc=33.44 < 60
+  keyword: Lc=31.43 < 60
+  markup: Lc=58.27 < 60
+  storage: Lc=51.58 < 60
+  support: Lc=55.21 < 60
+  fgMuted: Lc=58.27 < 60
+  aiCompletionPreview: Lc=21.87 < 30
+  parameterAnnotation: Lc=16.08 < 30
+  error: Lc=38.05 < 60
+  vcs.deleted: Lc=41.71 < 45
+  fgPlaceholder: Lc=20.95 < 30
+
+
+Exempted slots (11):
+  - comment: De-emphasized by design (italic gray) — Lc 30+ acceptable for non-content prose
+  - aiCompletionPreview: Ghost text — intentionally subtle so it does not compete with real code
+  - parameterAnnotation: Inlay hints — italic, low-mid contrast by design
+  - fgPlaceholder: Placeholder/disabled foreground — meant to read as inactive
+  - keyword: Phase 3 baseline — iconic Radical pink (#d5358f); brightening would change brand identity
+  - markup: Phase 3 baseline — Lc 58 is 2 points below threshold; safe to brighten in palette refresh
+  - storage: Phase 3 baseline — secondary pink (#F37AB0) ties to keyword identity; revisit with palette
+  - support: Phase 3 baseline — muted teal (#7cb3b6); brightening should pair with other gray-teals
+  - fgMuted: Phase 3 baseline — Lc 58 (gray-blue #94b4c4); 2 points under, brighten in palette refresh
+  - error: Phase 3 baseline — saturated red (#ff1767); APCA penalizes saturated reds, retain for status visibility
+  - vcs.deleted: Phase 3 baseline — close to threshold (Lc 41 vs 45); used in narrow gutter strips, accept
+
+Exempt failures (acknowledged): comment, keyword, markup, storage, support, fgMuted, aiCompletionPreview, parameterAnnotation, error, vcs.deleted, fgPlaceholder
+
+No blocking failures.
