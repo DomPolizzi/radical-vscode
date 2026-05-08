@@ -1,10 +1,10 @@
-import { BLUES, GRAYS, PINKS } from '../colors'
-import { token } from '../utils'
+import { BLUES, GRAYS, PINKS } from '../../palette.js'
+import { token } from '../../utils/index.js'
 
 export const comment = [
   // Documentation comment blocks
   token('comment.block.documentation', GRAYS[200]),
-  token('string.quoted.docstring', GRAYS[200], 'italic'), // same for Python
+  token('string.quoted.docstring', GRAYS[200], { italic: true }), // same for Python
 
   // @tags for JSDoc
   token('comment.block.documentation storage', PINKS[100]),

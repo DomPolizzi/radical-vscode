@@ -1,5 +1,5 @@
-import { BLUES, GRAYS } from '../colors'
-import { token } from '../utils'
+import { BLUES, GRAYS } from '../../palette.js'
+import { token } from '../../utils/index.js'
 
 export const yaml = [
   // Property keys

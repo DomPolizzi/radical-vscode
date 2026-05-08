@@ -1,26 +1,28 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 
-import { tokenColors } from './colors-tokens'
-import { workbenchColors } from './colors-workbench'
-import { comment } from './languages/comment'
-import { go } from './languages/go'
-import { html } from './languages/html'
-import { javascript } from './languages/javascript'
-import { json } from './languages/json'
-import { markdown } from './languages/markdown'
-import { react } from './languages/react'
-import { yaml } from './languages/yaml'
+import { tokenColors } from './tokens.js'
+import { workbenchColors } from './workbench.js'
+import { comment } from './languages/comment.js'
+import { go } from './languages/go.js'
+import { html } from './languages/html.js'
+import { javascript } from './languages/javascript.js'
+import { json } from './languages/json.js'
+import { markdown } from './languages/markdown.js'
+import { react } from './languages/react.js'
+import { yaml } from './languages/yaml.js'
 
 /**
- * Radical theme definition
+ * Radical Reborn theme definition (VSCode target)
+ *
+ * A maintained fork of Dan Hedgecock's Radical theme.
  */
 const theme = {
   $schema: 'vscode://schemas/color-theme',
-  author: 'Dan Hedgecock',
-  name: 'Radical',
+  author: 'Aqua (fork) — original by Dan Hedgecock',
+  name: 'Radical Reborn',
   colorSpaceName: 'sRGB',
-  semanticClass: 'theme.dark.radical',
+  semanticClass: 'theme.dark.radical-reborn',
   colors: workbenchColors,
   tokenColors: [
     ...tokenColors,
@@ -45,7 +47,7 @@ Object.entries(theme.colors).forEach(([key, value]) => {
 
 // 🚀 Write to dist
 fs.writeFile(
-  path.resolve(process.cwd(), 'dist/Radical.json'),
+  path.resolve(process.cwd(), 'dist/RadicalReborn.json'),
   JSON.stringify(theme, null, 2),
 )
   .then(() => console.log('Build finished'))

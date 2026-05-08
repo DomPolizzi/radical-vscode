@@ -1,5 +1,6 @@
-import colors, { LAVENDERS, PINKS } from './colors'
-import { token } from './utils'
+import colors from '../semantic.js'
+import { LAVENDERS, PINKS } from '../palette.js'
+import { token } from '../utils/index.js'
 
 // The generic syntax tokens are themed here according to the Textmate naming
 // convention and the package color semantics.
@@ -11,12 +12,12 @@ import { token } from './utils'
 
 export const tokenColors = [
   // ℹ️ No color for generic <meta>, see naming conventions for details
-  token('comment', colors.comment, 'italic'),
+  token('comment', colors.comment, { italic: true }),
   // Booleans are constants (Uppercase "constants" are actually variables)
   token('constant', colors.constant),
   // Entities end up being a lot of things, most noticably class names, method names
   token('entity', colors.entity),
-  token('invalid', colors.invalid, 'italic bold underline'),
+  token('invalid', colors.invalid, { italic: true, bold: true, underline: true }),
   // Language keywords like `export` or `return`
   token('keyword', colors.keyword),
   // Generic for markup content

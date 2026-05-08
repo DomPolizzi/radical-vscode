@@ -1,20 +1,20 @@
 {
-  "name": "radical-vscode",
-  "displayName": "Radical",
-  "description": "A dark theme for radical hacking inspired by retro futuristic design",
-  "version": "3.3.1",
-  "publisher": "dhedgecock",
-  "license": "ISC",
+  "name": "radical-reborn",
+  "displayName": "Radical Reborn",
+  "description": "A maintained fork of Radical — retro-futuristic dark theme for VSCode and Zed.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
   "engines": {
-    "vscode": "^1.40.0",
-    "node": "16 || 18"
+    "vscode": "^1.85.0",
+    "node": ">=22"
   },
   "bugs": {
-    "url": "https://github.com/dhedgecock/radical-vscode/issues"
+    "url": "https://github.com/DomPolizzi/radical-reborn/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dhedgecock/radical-vscode"
+    "url": "https://github.com/DomPolizzi/radical-reborn"
   },
   "icon": "assets/icon.png",
   "galleryBanner": {
@@ -27,26 +27,37 @@
   "contributes": {
     "themes": [
       {
-        "label": "Radical",
+        "label": "Radical Reborn",
         "uiTheme": "vs-dark",
-        "path": "./dist/Radical.json"
+        "path": "./dist/RadicalReborn.json"
       }
     ]
   },
   "scripts": {
-    "build": "ts-node ./theme/build.ts",
-    "format": "prettier --write *.md theme",
-    "lint": "NODE_ENV=test eslint theme"
+    "build": "tsx theme/vscode/build.ts",
+    "build:vscode": "tsx theme/vscode/build.ts",
+    "format": "prettier --write '**/*.{md,ts,json}'",
+    "lint": "eslint theme",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/chroma-js": "2.1.4",
-    "@types/node": "18.11.17",
-    "@typescript-eslint/eslint-plugin": "5.47.0",
-    "@typescript-eslint/parser": "5.47.0",
+    "@eslint/js": "^9.39.4",
+    "@types/chroma-js": "2.4.4",
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "ajv": "^8.17.0",
+    "ajv-cli": "^5.0.0",
+    "ajv-formats": "^3.0.1",
+    "apca-w3": "^0.1.9",
     "chroma-js": "2.4.2",
-    "eslint": "8.30.0",
-    "prettier": "2.8.1",
-    "ts-node": "10.9.1",
-    "typescript": "4.9.4"
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.18.0",
+    "vitest": "^2.1.8"
   }
 }

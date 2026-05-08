@@ -14,7 +14,7 @@
  * Typings: https://github.com/Microsoft/vscode/blob/main/src/vs/platform/theme/common/colorRegistry.ts
  */
 
-import { alpha } from './utils'
+import { alpha } from '../utils/index.js'
 
 //
 // Theme colors
@@ -35,8 +35,6 @@ const GRAY_100 = '#94b4c4'
 
 // --- Purples
 
-const PURPLE_100 = '#070a91'
-const PURPLE_200 = '#1D1E7D'
 const PURPLE_300 = '#242560'
 const PURPLE_400 = '#262b4b'
 
@@ -45,7 +43,6 @@ const PURPLE_400 = '#262b4b'
 const BLUE_50 = '#EAFEFA'
 const BLUE_100 = '#d0fff4'
 const BLUE_125 = '#c9fdf1'
-const BLUE_XXX = '#A8D2D4'
 const BLUE_175 = '#90b0b3'
 const BLUE_200 = '#7c9c9e'
 const BLUE_250 = '#415e6c'

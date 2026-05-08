@@ -1,4 +1,4 @@
-import { token } from '../utils'
+import { token } from '../../utils/index.js'
 
 /**
  * TODO
@@ -14,8 +14,8 @@ export const markdown = [
   token('comment.block.html', '#48676A'),
 
   // Headers
-  token('entity.name.section.markdown', '#ffdfee', 'bold'), // # punctuation
-  token('punctuation.definition.heading.markdown', '#a8ffdb', 'bold'), // text
+  token('entity.name.section.markdown', '#ffdfee', { bold: true }), // # punctuation
+  token('punctuation.definition.heading.markdown', '#a8ffdb', { bold: true }), // text
 
   // Code block
   token('markup.inline.raw.string.markdown', '#ff96aa'), // ` punctuation
@@ -29,21 +29,21 @@ export const markdown = [
 
   // Anchors
   token('meta.link.inline.markdown', '#9ceeeb'), // base anchor color
-  token('markup.underline.link', '#a8ffefad', 'italic'), // link href
+  token('markup.underline.link', '#a8ffefad', { italic: true }), // link href
   token('meta.link.inline.markdown punctuation.definition.string', '#5af5f0'), // []
 
   // Anchor definitions
   token('constant.other.reference.link', '#9ceeeb'), // text
-  token('meta.link.reference.def markup.underline.link', '#74A39D', 'italic'), // link href
+  token('meta.link.reference.def markup.underline.link', '#74A39D', { italic: true }), // link href
   token('meta.link.reference.def punctuation.definition.constant', '#75fffaad'), // []
 
   // Lists
   token('punctuation.definition.list.begin', '#a8ffdbad'),
 
   // Bold
-  token('markup.bold.markdown', '#74A39D', 'bold'),
+  token('markup.bold.markdown', '#74A39D', { bold: true }),
 
   // Italic
-  token('markup.italic.markdown', '#abdada', 'italic'),
-  token('markup.italic.markdown punctuation.definition', '#abdada', 'italic'),
+  token('markup.italic.markdown', '#abdada', { italic: true }),
+  token('markup.italic.markdown punctuation.definition', '#abdada', { italic: true }),
 ]
