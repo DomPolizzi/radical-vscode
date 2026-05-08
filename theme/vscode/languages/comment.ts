@@ -1,5 +1,5 @@
-import { BLUES, GRAYS, PINKS } from '../colors'
-import { token } from '../utils'
+import { BLUES, GRAYS, PINKS } from '../../palette'
+import { token } from '../../utils'
 
 export const comment = [
   // Documentation comment blocks

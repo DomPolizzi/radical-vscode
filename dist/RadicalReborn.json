@@ -1,9 +1,9 @@
 {
   "$schema": "vscode://schemas/color-theme",
-  "author": "Dan Hedgecock",
-  "name": "Radical",
+  "author": "Aqua (fork) — original by Dan Hedgecock",
+  "name": "Radical Reborn",
   "colorSpaceName": "sRGB",
-  "semanticClass": "theme.dark.radical",
+  "semanticClass": "theme.dark.radical-reborn",
   "colors": {
     "activityBar.background": "#100f1a",
     "activityBar.dropBackground": "#ff428e99",

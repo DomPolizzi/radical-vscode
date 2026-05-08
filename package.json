@@ -1,20 +1,19 @@
 {
-  "name": "radical-vscode",
-  "displayName": "Radical",
-  "description": "A dark theme for radical hacking inspired by retro futuristic design",
-  "version": "3.3.1",
-  "publisher": "dhedgecock",
-  "license": "ISC",
+  "name": "radical-reborn",
+  "displayName": "Radical Reborn",
+  "description": "A maintained fork of Radical — retro-futuristic dark theme for VSCode and Zed.",
+  "version": "0.1.0",
+  "license": "MIT",
   "engines": {
-    "vscode": "^1.40.0",
-    "node": "16 || 18"
+    "vscode": "^1.85.0",
+    "node": ">=18"
   },
   "bugs": {
-    "url": "https://github.com/dhedgecock/radical-vscode/issues"
+    "url": "https://github.com/DomPolizzi/radical-reborn/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dhedgecock/radical-vscode"
+    "url": "https://github.com/DomPolizzi/radical-reborn"
   },
   "icon": "assets/icon.png",
   "galleryBanner": {
@@ -27,14 +26,14 @@
   "contributes": {
     "themes": [
       {
-        "label": "Radical",
+        "label": "Radical Reborn",
         "uiTheme": "vs-dark",
-        "path": "./dist/Radical.json"
+        "path": "./dist/RadicalReborn.json"
       }
     ]
   },
   "scripts": {
-    "build": "ts-node ./theme/build.ts",
+    "build": "ts-node ./theme/vscode/build.ts",
     "format": "prettier --write *.md theme",
     "lint": "NODE_ENV=test eslint theme"
   },

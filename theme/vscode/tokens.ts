@@ -1,5 +1,6 @@
-import colors, { LAVENDERS, PINKS } from './colors'
-import { token } from './utils'
+import colors from '../semantic'
+import { LAVENDERS, PINKS } from '../palette'
+import { token } from '../utils'
 
 // The generic syntax tokens are themed here according to the Textmate naming
 // convention and the package color semantics.

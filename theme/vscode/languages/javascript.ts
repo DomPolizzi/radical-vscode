@@ -1,5 +1,5 @@
-import { BLUES, CHARTREUSES, PINKS, TEALS } from '../colors'
-import { token } from '../utils'
+import { BLUES, CHARTREUSES, PINKS, TEALS } from '../../palette'
+import { token } from '../../utils'
 
 export const javascript = [
   // --------------------------------------------------------

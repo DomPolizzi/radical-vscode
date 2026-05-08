@@ -1,5 +1,5 @@
-import { BLUES, GRAYS, GREENS, TEALS } from '../colors'
-import { token } from '../utils'
+import { BLUES, GRAYS, GREENS, TEALS } from '../../palette'
+import { token } from '../../utils'
 
 export const react = [
   // JSX component names, eg <Radical
