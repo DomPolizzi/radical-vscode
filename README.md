@@ -2,7 +2,9 @@
 
 A maintained fork of Dan Hedgecock's [Radical](https://github.com/DHedgecock/radical-vscode) — a retro-futuristic dark theme — extended for **VSCode** and **Zed**.
 
-> **Status:** v0.1.0 — initial fork release. Zed support and tooling modernization shipping in Phase 2-5.
+![Radical Reborn in Zed](assets/zed-preview.png)
+
+> **Status:** v0.1.0 — initial fork release.
 
 ## What's different from upstream Radical
 
