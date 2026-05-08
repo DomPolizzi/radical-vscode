@@ -1,5 +1,5 @@
-import { token } from '../../utils'
-import { PINKS } from '../../palette'
+import { token } from '../../utils/index.js'
+import { PINKS } from '../../palette.js'
 
 export const html = [
   // Match pink "=" from JSX for HTML attributes

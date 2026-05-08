@@ -1,4 +1,4 @@
-import { GRAYS, CHARTREUSES, PINKS, TEALS } from './palette'
+import { GRAYS, CHARTREUSES, PINKS, TEALS } from './palette.js'
 
 const semantic = {
   comment: GRAYS[500],

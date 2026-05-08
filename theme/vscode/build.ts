@@ -1,16 +1,16 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 
-import { tokenColors } from './tokens'
-import { workbenchColors } from './workbench'
-import { comment } from './languages/comment'
-import { go } from './languages/go'
-import { html } from './languages/html'
-import { javascript } from './languages/javascript'
-import { json } from './languages/json'
-import { markdown } from './languages/markdown'
-import { react } from './languages/react'
-import { yaml } from './languages/yaml'
+import { tokenColors } from './tokens.js'
+import { workbenchColors } from './workbench.js'
+import { comment } from './languages/comment.js'
+import { go } from './languages/go.js'
+import { html } from './languages/html.js'
+import { javascript } from './languages/javascript.js'
+import { json } from './languages/json.js'
+import { markdown } from './languages/markdown.js'
+import { react } from './languages/react.js'
+import { yaml } from './languages/yaml.js'
 
 /**
  * Radical Reborn theme definition (VSCode target)

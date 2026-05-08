@@ -1,5 +1,5 @@
-import { BLUES, CHARTREUSES, GRAYS, PINKS } from '../../palette'
-import { token } from '../../utils'
+import { BLUES, CHARTREUSES, GRAYS, PINKS } from '../../palette.js'
+import { token } from '../../utils/index.js'
 
 export const go = [
   // The amount of characters in Go that don't have any assigned tokens is alot,
