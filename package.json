@@ -34,13 +34,15 @@
     ]
   },
   "scripts": {
-    "build": "tsx theme/vscode/build.ts",
+    "build": "tsx theme/build-all.ts",
     "build:vscode": "tsx theme/vscode/build.ts",
+    "build:zed": "tsx theme/zed/build.ts",
     "check:contrast": "tsx theme/apca-check.ts",
     "format": "prettier --write '**/*.{md,ts,json}'",
     "lint": "eslint theme",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "validate": "ajv validate -c ajv-formats -s schemas/zed-v0.2.0.json -d themes/radical-reborn.json"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
