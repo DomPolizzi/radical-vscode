@@ -1,0 +1,8 @@
+id = "radical-reborn-theme"
+name = "Radical Reborn"
+version = "{{VERSION}}"
+schema_version = 1
+authors = ["Aqua <neku113@gmail.com>"]
+description = "A maintained fork of Radical — retro-futuristic dark theme."
+repository = "https://github.com/DomPolizzi/radical-reborn"
+themes = ["themes/radical-reborn.json"]
