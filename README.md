@@ -118,6 +118,46 @@ behavior, not the theme. Fixes, most impactful first:
 Fira Code's Regular weight is on the light side — if it still feels soft after
 the above, **JetBrains Mono** renders noticeably crisper at low DPI.
 
+### Is the font actually applied? (Zed)
+
+A **theme cannot set the font in Zed** — Zed's theme format has no font field,
+so Radical Reborn ships colors only. The font comes entirely from your
+`settings.json`. Picking "Radical Reborn" in the theme picker changes colors,
+never the font. If Fira Code doesn't seem active, check these in order:
+
+1. **Is Fira Code installed?** Zed only uses installed system fonts (it doesn't
+   bundle any). On macOS:
+
+   ```sh
+   system_profiler SPFontsDataType | grep -i "fira code" || echo "NOT INSTALLED"
+   ```
+
+   If missing: `brew install --cask font-fira-code`, then **fully quit and
+   relaunch Zed** (fonts load at startup).
+
+2. **Is the setting present?** Open settings (`cmd-,` → `~/.config/zed/settings.json`)
+   and confirm a *top-level* key — not inside the theme block:
+
+   ```json
+   "buffer_font_family": "Fira Code"
+   ```
+
+   The family name must match exactly: `Fira Code` (not `FiraCode`, and Nerd
+   Font builds register as `FiraCode Nerd Font`).
+
+3. **Visual proof:** with `"buffer_font_features": { "calt": true }`, type `=>`,
+   `!=`, `->`. Fira Code renders these as ligature glyphs. If they stay as
+   separate characters, Fira Code isn't the active font.
+
+4. **Still wrong?** Check Zed's log for a fallback:
+
+   ```sh
+   tail -n 200 ~/Library/Logs/Zed/Zed.log | grep -i font
+   ```
+
+   A "font not found / falling back" line means the name doesn't match an
+   installed family — Zed quietly substitutes its default (Zed Plex Mono).
+
 ## Acknowledgements
 
 Original "Radical" theme by **[Dan Hedgecock](https://github.com/DHedgecock)**. This fork preserves the palette philosophy (pink/teal/lavender/chartreuse on a deep purple-black) while extending coverage to modern editor surfaces and porting to Zed.
