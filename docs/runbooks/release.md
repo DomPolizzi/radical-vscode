@@ -119,6 +119,8 @@ Confirm https://open-vsx.org/extension/aquaoctet/radical-reborn shows the new ve
 
 ## 7. Submodule update PR to `zed-industries/extensions`
 
+> **`AquaOctet/radical-reborn` stays the sole source of truth.** This is how Zed's public registry indexes *every* theme: the registry only stores a git **submodule pointer + version** back to your repo (same as Catppuccin, Dracula, etc.). You are not contributing code to or joining the `zed-industries` project — you're registering a pointer so the theme appears in Zed's Extensions panel. Skip this entire section if you only ever install via the dev-extension path locally.
+
 First-time setup: fork `https://github.com/zed-industries/extensions`.
 
 ```bash
