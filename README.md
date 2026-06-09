@@ -80,9 +80,12 @@ italic rather than a synthetic one.
   "buffer_font_features": { "calt": true },
   "buffer_font_size": 14,
   "buffer_font_weight": 500,
-  "buffer_line_height": "comfortable"
+  "buffer_line_height": "comfortable",
+  "ui_font_size": 15
 }
 ```
+
+> Copy-paste version: [`examples/zed-settings.jsonc`](examples/zed-settings.jsonc).
 
 > Install Fira Code first (`brew install --cask font-fira-code` on macOS, your
 > package manager on Linux, or [the release zip](https://github.com/tonsky/FiraCode/releases)).

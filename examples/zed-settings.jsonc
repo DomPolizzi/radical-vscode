@@ -1,0 +1,19 @@
+// Recommended Zed settings for the Radical Reborn theme.
+// Copy the keys you want into ~/.config/zed/settings.json (Zed: `cmd-,`).
+//
+// NOTE: the theme sets colors only — Zed has no theme-level font. The font
+// below comes entirely from these settings. Install Fira Code first
+// (`brew install --cask font-fira-code`) and fully relaunch Zed.
+{
+  "theme": "Radical Reborn",
+
+  // Editor (buffer) font
+  "buffer_font_family": "Fira Code",
+  "buffer_font_features": { "calt": true }, // programming ligatures: => != ->
+  "buffer_font_size": 14,
+  "buffer_font_weight": 500, // medium — crisper than Regular on low-DPI displays
+  "buffer_line_height": "comfortable",
+
+  // UI font (tabs, panels, menus)
+  "ui_font_size": 15
+}
