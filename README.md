@@ -79,6 +79,7 @@ italic rather than a synthetic one.
   "buffer_font_family": "Fira Code",
   "buffer_font_features": { "calt": true },
   "buffer_font_size": 14,
+  "buffer_font_weight": 500,
   "buffer_line_height": "comfortable"
 }
 ```
@@ -86,6 +87,36 @@ italic rather than a synthetic one.
 > Install Fira Code first (`brew install --cask font-fira-code` on macOS, your
 > package manager on Linux, or [the release zip](https://github.com/tonsky/FiraCode/releases)).
 > `calt` in Zed and `fontLigatures` in VSCode enable the ligatures.
+
+### Crisp rendering on a non-Retina display (macOS)
+
+macOS uses grayscale antialiasing that's sharp on Retina but renders **soft /
+fuzzy on low-DPI external monitors** (1080p/1440p). This is an OS rendering
+behavior, not the theme. Fixes, most impactful first:
+
+1. **Reduce macOS font-smoothing** — the big lever. In Terminal:
+
+   ```sh
+   # Per-app, Zed only (recommended):
+   defaults write dev.zed.Zed AppleFontSmoothing -int 0
+   # …or globally, for every app:
+   defaults write -g AppleFontSmoothing -int 0
+   ```
+
+   Fully quit and reopen Zed (the global form needs a logout/login). `0`
+   disables the stroke "fattening" that blurs text at low DPI; try `1` if `0`
+   looks too thin. Revert with `defaults delete dev.zed.Zed AppleFontSmoothing`.
+   (For VSCode, the same trick uses bundle id `com.microsoft.VSCode`, or set
+   `"workbench.fontAliasing": "antialiased"`.)
+
+2. **Use a medium font weight** (already in the snippet above) — thicker
+   strokes catch more pixels and read crisper: `"buffer_font_weight": 500`.
+
+3. **Keep an integer font size** (14, 15, 16 — not 14.5) and avoid fractional
+   display scaling; both blur text at low DPI.
+
+Fira Code's Regular weight is on the light side — if it still feels soft after
+the above, **JetBrains Mono** renders noticeably crisper at low DPI.
 
 ## Acknowledgements
 
