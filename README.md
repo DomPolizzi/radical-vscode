@@ -50,6 +50,37 @@ npm run package    # produces radical-reborn.vsix
 code --install-extension radical-reborn.vsix
 ```
 
+## Recommended font
+
+Radical Reborn is a **color theme** — by design, neither VSCode nor Zed lets a
+theme bundle or force a font, so the font is yours to choose. The palette was
+tuned with crisp monospace fonts in mind. Because the theme leans on **italics**
+(comments, type names), pick a font with a *real* italic (not synthetic):
+[JetBrains Mono](https://www.jetbrains.com/lp/mono/), Cascadia Code, MonoLisa,
+or Operator Mono all pair well. Ligature fonts make the pink operators pop.
+
+**VSCode** — `settings.json`:
+
+```json
+{
+  "editor.fontFamily": "'JetBrains Mono', 'Cascadia Code', monospace",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 14,
+  "editor.lineHeight": 1.6
+}
+```
+
+**Zed** — `settings.json`:
+
+```json
+{
+  "buffer_font_family": "JetBrains Mono",
+  "buffer_font_features": { "calt": true },
+  "buffer_font_size": 14,
+  "buffer_line_height": "comfortable"
+}
+```
+
 ## Acknowledgements
 
 Original "Radical" theme by **[Dan Hedgecock](https://github.com/DHedgecock)**. This fork preserves the palette philosophy (pink/teal/lavender/chartreuse on a deep purple-black) while extending coverage to modern editor surfaces and porting to Zed.
