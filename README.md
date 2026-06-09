@@ -53,17 +53,19 @@ code --install-extension radical-reborn.vsix
 ## Recommended font
 
 Radical Reborn is a **color theme** — by design, neither VSCode nor Zed lets a
-theme bundle or force a font, so the font is yours to choose. The palette was
-tuned with crisp monospace fonts in mind. Because the theme leans on **italics**
-(comments, type names), pick a font with a *real* italic (not synthetic):
-[JetBrains Mono](https://www.jetbrains.com/lp/mono/), Cascadia Code, MonoLisa,
-or Operator Mono all pair well. Ligature fonts make the pink operators pop.
+theme bundle or force a font, so the font is yours to choose. We recommend
+**[Fira Code](https://github.com/tonsky/FiraCode)** — a free, hugely popular
+coding font whose programming ligatures (`=>`, `!=`, `>=`) look great against
+this palette's pink operators. [JetBrains Mono](https://www.jetbrains.com/lp/mono/),
+Cascadia Code, and MonoLisa are excellent alternatives. Because the theme leans
+on **italics** (comments, type names, parameters), prefer a font with a *real*
+italic rather than a synthetic one.
 
 **VSCode** — `settings.json`:
 
 ```json
 {
-  "editor.fontFamily": "'JetBrains Mono', 'Cascadia Code', monospace",
+  "editor.fontFamily": "'Fira Code', 'JetBrains Mono', monospace",
   "editor.fontLigatures": true,
   "editor.fontSize": 14,
   "editor.lineHeight": 1.6
@@ -74,12 +76,16 @@ or Operator Mono all pair well. Ligature fonts make the pink operators pop.
 
 ```json
 {
-  "buffer_font_family": "JetBrains Mono",
+  "buffer_font_family": "Fira Code",
   "buffer_font_features": { "calt": true },
   "buffer_font_size": 14,
   "buffer_line_height": "comfortable"
 }
 ```
+
+> Install Fira Code first (`brew install --cask font-fira-code` on macOS, your
+> package manager on Linux, or [the release zip](https://github.com/tonsky/FiraCode/releases)).
+> `calt` in Zed and `fontLigatures` in VSCode enable the ligatures.
 
 ## Acknowledgements
 
