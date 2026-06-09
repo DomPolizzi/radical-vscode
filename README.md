@@ -17,7 +17,7 @@ A maintained fork of Dan Hedgecock's [Radical](https://github.com/DHedgecock/rad
 ### VSCode (sideload — not on the Marketplace)
 
 ```sh
-git clone https://github.com/DomPolizzi/radical-reborn
+git clone https://github.com/AquaOctet/radical-reborn
 cd radical-reborn
 npm install
 npm run build

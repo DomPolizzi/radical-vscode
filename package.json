@@ -10,11 +10,11 @@
     "node": ">=22"
   },
   "bugs": {
-    "url": "https://github.com/DomPolizzi/radical-reborn/issues"
+    "url": "https://github.com/AquaOctet/radical-reborn/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/DomPolizzi/radical-reborn"
+    "url": "https://github.com/AquaOctet/radical-reborn"
   },
   "icon": "assets/icon.png",
   "galleryBanner": {

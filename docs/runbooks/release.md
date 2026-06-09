@@ -93,7 +93,7 @@ git checkout -b update/radical-reborn-theme-<NEW VERSION> upstream/main
 
 # First publish: add submodule. Subsequent updates: bump it.
 # First publish only:
-git submodule add https://github.com/DomPolizzi/radical-reborn extensions/radical-reborn-theme
+git submodule add https://github.com/AquaOctet/radical-reborn extensions/radical-reborn-theme
 
 # Subsequent updates:
 cd extensions/radical-reborn-theme
