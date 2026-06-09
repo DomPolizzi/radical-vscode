@@ -1,0 +1,48 @@
+# .vscodeignore — a theme only needs the built JSON + store metadata.
+# Without this, `vsce package` would bundle the entire source tree,
+# tests, docs, node_modules, and the 1.6 MB root icon.png.
+#
+# Kept in the .vsix: package.json, README.md, LICENSE, CHANGELOG.md,
+# dist/RadicalReborn.json, assets/icon.png.
+
+# Source + build inputs
+theme/**
+schemas/**
+*.ts
+eslint.config.js
+tsconfig.json
+vitest.config.ts
+
+# Tests, docs, examples, CI, editor config
+tests/**
+docs/**
+examples/**
+.github/**
+.vscode/**
+
+# Zed-only output (not used by VSCode)
+themes/**
+extension.toml
+extension.toml.template
+*.itermcolors
+
+# Build report (keep the theme JSON itself)
+dist/apca-report.txt
+
+# Tooling / dotfiles / lockfiles
+node_modules/**
+package-lock.json
+.prettierrc
+.nvmrc
+.gitignore
+.gitmodules
+
+# Assets — keep only the icon referenced by package.json
+assets/**
+!assets/icon.png
+
+# The oversized root icon (package.json points at assets/icon.png)
+icon.png
+
+# Never ship the packaged artifact into itself
+*.vsix

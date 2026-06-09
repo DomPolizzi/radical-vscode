@@ -1,3 +1,6 @@
 node_modules
 
 .DS_Store
+
+# Packaged VSCode extension artifact (built at release time, attached to GitHub Release)
+*.vsix
