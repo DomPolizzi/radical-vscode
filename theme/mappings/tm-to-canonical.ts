@@ -95,6 +95,8 @@ export const TM_TO_CANONICAL: Record<string, ZedSyntaxKey | VSCodeOnly> = {
   string: 'string',
   support: 'type',
   variable: 'variable',
+  'variable.parameter': 'variable.parameter', // italic preserved by syntax adapter
+  'variable.language': 'variable.special', // this/self/super → Zed variable.special
   'support.type': 'type',
   'keyword.control.as': 'keyword', // bold/underline preserved by syntax adapter
   'keyword.operator.type.asserts': 'operator', // bold preserved

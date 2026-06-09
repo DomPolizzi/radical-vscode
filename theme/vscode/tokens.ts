@@ -28,6 +28,10 @@ export const tokenColors = [
   // Support is meant to be things provided by external frameworks or libraries
   token('support', colors.support),
   token('variable', colors.variable),
+  // Function/method parameters — italic for a softer, modern read
+  token('variable.parameter', colors.variable, { italic: true }),
+  // Language variables (this / self / super) — italic
+  token('variable.language', colors.variable, { italic: true }),
 
   // --- TYPES
   {
