@@ -243,11 +243,11 @@
             "color": "#8ce1e7ff"
           },
           "type": {
-            "color": "#d9a3e0ff",
+            "color": "#ec99f7ff",
             "font_style": "italic"
           },
           "type.builtin": {
-            "color": "#be8ce7ff",
+            "color": "#cd8ce7ff",
             "font_style": "italic"
           },
           "enum": {
@@ -272,7 +272,8 @@
             "color": "#b4dae9ff"
           },
           "variable.parameter": {
-            "color": "#94b4c4ff"
+            "color": "#b4dae9ff",
+            "font_style": "italic"
           },
           "variable.special": {
             "color": "#f37ab0ff",
@@ -295,10 +296,10 @@
             "color": "#be8ce7ff"
           },
           "punctuation": {
-            "color": "#94b4c4ff"
+            "color": "#b4dae9ff"
           },
           "punctuation.bracket": {
-            "color": "#94b4c4ff"
+            "color": "#b4dae9ff"
           },
           "punctuation.delimiter": {
             "color": "#75b7bbff"
@@ -307,7 +308,7 @@
             "color": "#a4ffe4ff"
           },
           "punctuation.markup": {
-            "color": "#94b4c4ff"
+            "color": "#b4dae9ff"
           },
           "punctuation.special": {
             "color": "#f37ab0ff"

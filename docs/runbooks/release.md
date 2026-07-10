@@ -1,6 +1,6 @@
 # Release runbook — Radical Reborn
 
-Single source of truth for shipping a new version to the **Zed Extensions registry**. The VSCode build is sideload-only and ships locally with each git checkout — no separate release.
+Single source of truth for shipping a new version of **Radical Reborn** to all three distribution channels: the **Zed Extensions registry**, the **Open VSX registry** (VSCodium/Cursor/Windsurf), and a **`.vsix`** attached to the GitHub Release (stock VSCode). One `package.json` version bump drives all three — never bump them independently.
 
 ## Pre-flight
 
@@ -73,7 +73,53 @@ git tag "v<NEW VERSION>"
 git push origin main "v<NEW VERSION>"
 ```
 
-## 6. Submodule update PR to `zed-industries/extensions`
+## 6. Publish the VSCode build (.vsix + Open VSX)
+
+Ships from the same version bump as Zed — no separate version number.
+
+### 6a. Package the `.vsix`
+
+```bash
+npm run package        # runs vscode:prepublish (build) then vsce package
+unzip -l radical-reborn.vsix
+```
+
+The listing must contain **only**: `package.json`, `README.md`, `LICENSE`, `CHANGELOG.md`, `dist/RadicalReborn.json`, `assets/icon.png` (plus vsce's `extension.vsixmanifest` and `[Content_Types].xml`). If `theme/`, `tests/`, `node_modules/`, or the 1.6 MB root `icon.png` appear, fix `.vscodeignore` before publishing.
+
+### 6b. Attach the `.vsix` to the GitHub Release
+
+```bash
+gh release create "v<NEW VERSION>" radical-reborn.vsix \
+  --title "v<NEW VERSION>" --notes-from-tag
+# If the release already exists:
+gh release upload "v<NEW VERSION>" radical-reborn.vsix
+```
+
+This is the artifact the README's "download the `.vsix`" link points at.
+
+### 6c. Publish to Open VSX
+
+**One-time setup:**
+
+1. Sign in at https://open-vsx.org with GitHub.
+2. **Sign the Eclipse Foundation Publisher Agreement** — Open VSX rejects publishing until this is done. This is the most common first-publish failure.
+3. Create a token at https://open-vsx.org/user-settings/tokens.
+4. Create the namespace (must equal `package.json:publisher`, i.e. `aquaoctet`):
+   ```bash
+   npx ovsx create-namespace aquaoctet -p <OPEN_VSX_TOKEN>
+   ```
+
+**Each release:**
+
+```bash
+OVSX_PAT=<OPEN_VSX_TOKEN> npm run publish:ovsx
+```
+
+Confirm https://open-vsx.org/extension/aquaoctet/radical-reborn shows the new version.
+
+## 7. Submodule update PR to `zed-industries/extensions`
+
+> **`AquaOctet/radical-reborn` stays the sole source of truth.** This is how Zed's public registry indexes *every* theme: the registry only stores a git **submodule pointer + version** back to your repo (same as Catppuccin, Dracula, etc.). You are not contributing code to or joining the `zed-industries` project — you're registering a pointer so the theme appears in Zed's Extensions panel. Skip this entire section if you only ever install via the dev-extension path locally.
 
 First-time setup: fork `https://github.com/zed-industries/extensions`.
 
@@ -93,7 +139,7 @@ git checkout -b update/radical-reborn-theme-<NEW VERSION> upstream/main
 
 # First publish: add submodule. Subsequent updates: bump it.
 # First publish only:
-git submodule add https://github.com/DomPolizzi/radical-reborn extensions/radical-reborn-theme
+git submodule add https://github.com/AquaOctet/radical-reborn extensions/radical-reborn-theme
 
 # Subsequent updates:
 cd extensions/radical-reborn-theme
@@ -118,7 +164,7 @@ git push origin update/radical-reborn-theme-<NEW VERSION>
 
 Open the PR against `zed-industries/extensions:main`. CI auto-validates and auto-merges on green within ~12-24 hours (faster for updates — observed ~25 minutes for version-bump PRs).
 
-## 7. Verify the published extension
+## 8. Verify the published extension
 
 After the PR merges:
 
@@ -133,10 +179,11 @@ If the registry build fails, the PR will reopen with a comment. Common causes:
 - License file unrecognized — must be MIT (we are), Apache-2.0, BSD-2/3, GPL-3.0, LGPL-3.0, CC BY 4.0, Unlicense, or zlib
 - Schema validation fails — run `npm run validate` locally to confirm
 
-## 8. Post-release
+## 9. Post-release
 
 - [ ] Tag matches what's published (`git tag --list 'v*'`)
-- [ ] Marketplace listing renders the README correctly
+- [ ] `.vsix` attached to the GitHub Release; Open VSX listing renders the README correctly
+- [ ] Open VSX version == `.vsix` version == `package.json` version
 - [ ] `extension.toml` version in our repo == version in `zed-industries/extensions/extensions.toml`
 
 ## Common rejections from registry CI

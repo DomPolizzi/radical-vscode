@@ -315,6 +315,20 @@
       }
     },
     {
+      "scope": "variable.parameter",
+      "settings": {
+        "foreground": "#B4DAE9",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "scope": "variable.language",
+      "settings": {
+        "foreground": "#B4DAE9",
+        "fontStyle": "italic"
+      }
+    },
+    {
       "scope": "support.type",
       "settings": {
         "fontStyle": "italic",

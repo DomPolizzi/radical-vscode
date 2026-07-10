@@ -318,6 +318,20 @@ exports[`build output snapshots > dist/RadicalReborn.json is stable 1`] = `
       }
     },
     {
+      "scope": "variable.parameter",
+      "settings": {
+        "foreground": "#B4DAE9",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "scope": "variable.language",
+      "settings": {
+        "foreground": "#B4DAE9",
+        "fontStyle": "italic"
+      }
+    },
+    {
       "scope": "support.type",
       "settings": {
         "fontStyle": "italic",
@@ -902,11 +916,11 @@ exports[`build output snapshots > themes/radical-reborn.json is stable 1`] = `
             "color": "#8ce1e7ff"
           },
           "type": {
-            "color": "#d9a3e0ff",
+            "color": "#ec99f7ff",
             "font_style": "italic"
           },
           "type.builtin": {
-            "color": "#be8ce7ff",
+            "color": "#cd8ce7ff",
             "font_style": "italic"
           },
           "enum": {
@@ -931,7 +945,8 @@ exports[`build output snapshots > themes/radical-reborn.json is stable 1`] = `
             "color": "#b4dae9ff"
           },
           "variable.parameter": {
-            "color": "#94b4c4ff"
+            "color": "#b4dae9ff",
+            "font_style": "italic"
           },
           "variable.special": {
             "color": "#f37ab0ff",
@@ -954,10 +969,10 @@ exports[`build output snapshots > themes/radical-reborn.json is stable 1`] = `
             "color": "#be8ce7ff"
           },
           "punctuation": {
-            "color": "#94b4c4ff"
+            "color": "#b4dae9ff"
           },
           "punctuation.bracket": {
-            "color": "#94b4c4ff"
+            "color": "#b4dae9ff"
           },
           "punctuation.delimiter": {
             "color": "#75b7bbff"
@@ -966,7 +981,7 @@ exports[`build output snapshots > themes/radical-reborn.json is stable 1`] = `
             "color": "#a4ffe4ff"
           },
           "punctuation.markup": {
-            "color": "#94b4c4ff"
+            "color": "#b4dae9ff"
           },
           "punctuation.special": {
             "color": "#f37ab0ff"

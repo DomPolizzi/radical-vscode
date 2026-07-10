@@ -50,8 +50,8 @@ export const zedSyntax: Partial<Record<ZedSyntaxKey, SyntaxEntry>> = {
 
   // --- Functions / types / classes
   function: entry(BLUES[150]),
-  type: entry(LAVENDERS[200], { italic: true }),
-  'type.builtin': entry(LAVENDERS[300], { italic: true }),
+  type: entry(LAVENDERS[500], { italic: true }),
+  'type.builtin': entry(LAVENDERS[400], { italic: true }),
   enum: entry(LAVENDERS[400]),
   variant: entry(LAVENDERS[400]),
   constructor: entry(LAVENDERS[500]),
@@ -63,7 +63,7 @@ export const zedSyntax: Partial<Record<ZedSyntaxKey, SyntaxEntry>> = {
 
   // --- Variables / parameters / properties
   variable: entry(semantic.variable),
-  'variable.parameter': entry(GRAYS[150]),
+  'variable.parameter': entry(GRAYS[100], { italic: true }),
   'variable.special': entry(PINKS[300], { italic: true }),
   property: entry(GREENS[100]),
   attribute: entry(GREENS[100]),
@@ -73,12 +73,12 @@ export const zedSyntax: Partial<Record<ZedSyntaxKey, SyntaxEntry>> = {
   'tag.doctype': entry(GRAYS[300], { italic: true }),
   namespace: entry(LAVENDERS[300]),
 
-  // --- Punctuation
-  punctuation: entry(GRAYS[150]),
-  'punctuation.bracket': entry(GRAYS[150]),
+  // --- Punctuation (lifted to editor-foreground brightness — VSCode parity, less "matte")
+  punctuation: entry(GRAYS[100]),
+  'punctuation.bracket': entry(GRAYS[100]),
   'punctuation.delimiter': entry(GRAYS[200]),
   'punctuation.list_marker': entry(TEALS[200]),
-  'punctuation.markup': entry(GRAYS[150]),
+  'punctuation.markup': entry(GRAYS[100]),
   'punctuation.special': entry(PINKS[300]),
 
   // --- Markup (Markdown)

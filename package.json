@@ -3,6 +3,7 @@
   "displayName": "Radical Reborn",
   "description": "A maintained fork of Radical — retro-futuristic dark theme for VSCode and Zed.",
   "version": "0.1.0",
+  "publisher": "aquaoctet",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -10,11 +11,11 @@
     "node": ">=22"
   },
   "bugs": {
-    "url": "https://github.com/DomPolizzi/radical-reborn/issues"
+    "url": "https://github.com/AquaOctet/radical-reborn/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/DomPolizzi/radical-reborn"
+    "url": "https://github.com/AquaOctet/radical-reborn"
   },
   "icon": "assets/icon.png",
   "galleryBanner": {
@@ -42,7 +43,10 @@
     "lint": "eslint theme",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "validate": "ajv validate -c ajv-formats -s schemas/zed-v0.2.0.json -d themes/radical-reborn.json"
+    "validate": "ajv validate -c ajv-formats -s schemas/zed-v0.2.0.json -d themes/radical-reborn.json",
+    "vscode:prepublish": "npm run build",
+    "package": "npx --yes @vscode/vsce@^3 package --no-dependencies --out radical-reborn.vsix",
+    "publish:ovsx": "npx --yes ovsx@^0.10 publish radical-reborn.vsix"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
