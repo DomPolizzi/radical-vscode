@@ -43,6 +43,11 @@ Or in VSCode: Extensions panel → `⋯` menu → **Install from VSIX…**.
 
 Install via the Zed Extensions panel: search **Radical Reborn**.
 
+> Registry submission under review
+> ([zed-industries/extensions#7072](https://github.com/zed-industries/extensions/pull/7072)).
+> Until it lands: clone this repo, `npm install && npm run build`, then run
+> `zed: install dev extension` and pick the repo folder.
+
 ### Build from source (contributors)
 
 ```sh
