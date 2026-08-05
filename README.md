@@ -17,6 +17,10 @@ A maintained fork of Dan Hedgecock's [Radical](https://github.com/DHedgecock/rad
 In every editor, pick **Radical Reborn** from the theme picker after install
 (VSCode/VSCodium/Cursor: `Cmd/Ctrl-K Cmd/Ctrl-T`).
 
+> **After installing:** the theme ships colors only — set up the
+> [recommended font](#recommended-font) (copy-paste settings included), and see
+> [Overrides](#overrides) to tweak any color without forking the theme.
+
 ### VSCodium / Cursor / Windsurf (Open VSX)
 
 Published to the [Open VSX registry](https://open-vsx.org/extension/aquaoctet/radical-reborn).
@@ -160,6 +164,47 @@ never the font. If Fira Code doesn't seem active, check these in order:
 
    A "font not found / falling back" line means the name doesn't match an
    installed family — Zed quietly substitutes its default (Zed Plex Mono).
+
+## Overrides
+
+Both editors let you layer your own colors on top of Radical Reborn in
+`settings.json` — no fork needed, and your tweaks survive theme updates.
+
+**Zed** — `experimental.theme_overrides` applies to whatever theme is active.
+UI keys use the theme's style names; syntax colors nest under `"syntax"`:
+
+```json
+{
+  "experimental.theme_overrides": {
+    "editor.active_line.background": "#cd8ce720",
+    "syntax": {
+      "comment": { "color": "#7c9c9e", "font_style": null }
+    }
+  }
+}
+```
+
+**VSCode / VSCodium** — scope overrides to the theme with a `[Radical Reborn]`
+block. Workbench (UI) keys and syntax tokens use separate settings:
+
+```json
+{
+  "workbench.colorCustomizations": {
+    "[Radical Reborn]": {
+      "editor.lineHighlightBackground": "#d043cf20"
+    }
+  },
+  "editor.tokenColorCustomizations": {
+    "[Radical Reborn]": {
+      "comments": "#7c9c9e"
+    }
+  }
+}
+```
+
+Key references: [Zed theme keys](https://zed.dev/schema/themes/v0.2.0.json)
+(plus `schemas/zed-v0.2.0-extended.json` in this repo for newer engine keys) ·
+[VSCode theme color reference](https://code.visualstudio.com/api/references/theme-color).
 
 ## Acknowledgements
 
