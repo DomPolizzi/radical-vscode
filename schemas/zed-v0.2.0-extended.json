@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ThemeStyleContent extensions — post-v0.2.0 engine keys",
+  "$comment": "The published Zed theme schema (zed-v0.2.0.json, byte-identical to https://zed.dev/schema/themes/v0.2.0.json as of 2026-08-05) is frozen at its 2024 shape while the Zed engine accepts ~47 newer style keys. This file registers ONLY the post-freeze keys this theme actually emits. tests/schema.test.ts asserts every emitted style key exists in the vendored schema OR here — closing the typo hole the open published schema leaves (it has no additionalProperties:false, so plain validation passes any key). npm run validate deliberately still targets the vendored schema: composing this file into validation would change no outcome. Do NOT add deprecated keys here — the test's ratchet list must stay out of both files. Provenance: zed-industries/zed crates/settings_content/src/theme.rs, verified against main 2026-08-05; per-key-group PR numbers in docs/audits/2026-08-05-theme-json-audit.md.",
+  "definitions": {
+    "ThemeStyleContentExtensions": {
+      "type": "object",
+      "properties": {
+        "editor.hover_line_number": {
+          "type": ["string", "null"],
+          "$comment": "pre-2026 engine key, absent from the published schema"
+        },
+        "search.active_match_background": {
+          "type": ["string", "null"],
+          "$comment": "zed#44098 (2025-12-03)"
+        },
+        "version_control.added": {
+          "type": ["string", "null"],
+          "$comment": "engine key, absent from the published schema"
+        },
+        "version_control.modified": {
+          "type": ["string", "null"],
+          "$comment": "engine key, absent from the published schema"
+        },
+        "version_control.deleted": {
+          "type": ["string", "null"],
+          "$comment": "engine key, absent from the published schema"
+        },
+        "version_control.word_added": {
+          "type": ["string", "null"],
+          "$comment": "zed#43269 (2025-12-02), word-level diff"
+        },
+        "version_control.word_deleted": {
+          "type": ["string", "null"],
+          "$comment": "zed#43269 (2025-12-02), word-level diff"
+        },
+        "version_control.conflict_marker.ours": {
+          "type": ["string", "null"],
+          "$comment": "replacement for deprecated version_control.conflict_ours_background"
+        },
+        "version_control.conflict_marker.theirs": {
+          "type": ["string", "null"],
+          "$comment": "replacement for deprecated version_control.conflict_theirs_background"
+        },
+        "scrollbar.thumb.active_background": {
+          "type": ["string", "null"],
+          "$comment": "engine key; completes the scrollbar thumb state set (R1)"
+        },
+        "minimap.thumb.background": {
+          "type": ["string", "null"],
+          "$comment": "engine key; adopted with the R1 scrollbar/minimap unification"
+        },
+        "minimap.thumb.hover_background": {
+          "type": ["string", "null"],
+          "$comment": "engine key; adopted with the R1 scrollbar/minimap unification"
+        },
+        "minimap.thumb.active_background": {
+          "type": ["string", "null"],
+          "$comment": "engine key; adopted with the R1 scrollbar/minimap unification"
+        },
+        "minimap.thumb.border": {
+          "type": ["string", "null"],
+          "$comment": "engine key; adopted with the R1 scrollbar/minimap unification"
+        }
+      }
+    }
+  }
+}

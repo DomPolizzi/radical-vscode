@@ -1,0 +1,215 @@
+# Tag-push release pipeline: gates → GitHub Release → Open VSX + Zed bump.
+#
+# Fail-closed needs: DAG — nothing publishes unless every gate passes, and the
+# GitHub Release (the canonical record) exists before any registry sees the
+# version. Every uses: is SHA-pinned (mutable tags are forbidden here — this
+# workflow can read publish secrets). Secrets live in the `release`
+# Environment, deployment-tag-scoped to v*.
+#
+# Per-release manual work is exactly: version bump + CHANGELOG + annotated tag
+# push. See docs/runbooks/release.md.
+
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+# Fixed group serializes distinct tags too; never cancel a publish mid-flight.
+# Caveat: GitHub keeps at most ONE pending run per group — push one tag at a
+# time, and re-run any queued release that reports "canceled".
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          # Full history: the ancestor-of-main guard needs exact ancestry
+          # (shallow grafts make merge-base flaky). Repo is tiny.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Guards (before npm ci — bad tags reject in seconds)
+        run: |
+          # 1. Strict semver only — rejects v0.1.2-rc1 sneaking through the v*
+          #    glob. Open VSX has no unpublish; prereleases must never ship.
+          [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::non-release tag $GITHUB_REF_NAME"; exit 1; }
+          TAG_V="${GITHUB_REF_NAME#v}"
+          # 2. Tag ↔ BOTH manifests (Zed rejects extensions.toml/extension.toml
+          #    version mismatches at the submodule commit).
+          PKG_V="$(node -p "require('./package.json').version")"
+          ZED_V="$(grep -m1 '^version' extension.toml | sed 's/.*"\(.*\)"/\1/')"
+          [ "$TAG_V" = "$PKG_V" ] && [ "$TAG_V" = "$ZED_V" ] || { echo "::error::tag v$TAG_V != package.json ($PKG_V) or extension.toml ($ZED_V)"; exit 1; }
+          # 3. Tag commit must be on main — Zed requires the pinned submodule
+          #    commit to live on a branch. HEAD^{commit} peels annotated tags.
+          git merge-base --is-ancestor "$(git rev-parse 'HEAD^{commit}')" origin/main || { echo "::error::tagged commit is not on main"; exit 1; }
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build (VSCode + Zed)
+        run: npm run build
+
+      - name: APCA contrast check
+        run: npm run check:contrast
+
+      # Split-brain gate: Zed's registry serves the COMMITTED themes/ JSON at
+      # this tag while the .vsix ships the build above — they must be equal.
+      # AFTER contrast (check:contrast is the only writer of dist/apca-report.txt).
+      # Keep in sync with ci.yml.
+      - name: Committed artifacts match source
+        run: npm run check:drift
+
+      - name: Validate Zed JSON against v0.2.0 schema
+        run: npm run validate
+
+      - name: Tests
+        run: npm test
+
+      - name: Package .vsix
+        run: npm run package
+
+      # Tests and vsce's prepublish rebuild just executed the full dependency
+      # tree — prove nothing mutated the workspace before we promote the artifact.
+      - name: Workspace unchanged through packaging
+        run: |
+          git diff --exit-code -- theme/ dist/ themes/ extension.toml package.json
+          [ -z "$(git status --porcelain -- theme/ dist/ themes/)" ]
+
+      # Frozen allowlist (captured from the hand-verified v0.1.0 artifact) +
+      # payload byte-identity + manifest version. A new top-level dir leaking
+      # into the package fails the diff — no denylist to outgrow.
+      - name: Assert .vsix contents (frozen allowlist + payload identity)
+        run: |
+          unzip -Z1 radical-reborn.vsix | LC_ALL=C sort | diff -u .github/vsix-manifest.txt -
+          unzip -p radical-reborn.vsix extension/dist/RadicalReborn.json | diff -q - dist/RadicalReborn.json
+          unzip -p radical-reborn.vsix extension.vsixmanifest | grep -q "Version=\"${GITHUB_REF_NAME#v}\""
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: vsix
+          path: radical-reborn.vsix
+          if-no-files-found: error
+
+  release:
+    needs: gates
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: vsix
+
+      - name: Create GitHub Release (idempotent, flake-safe)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          # Three-state machine — an API flake must NOT fall through to
+          # deleting a published release (delete is reserved for partial
+          # drafts left by a dead run).
+          if state=$(gh release view "$TAG" --json isDraft -q .isDraft 2>err.txt); then
+            if [ "$state" = "true" ]; then
+              gh release delete "$TAG" --yes
+              gh release create "$TAG" ./radical-reborn.vsix --verify-tag --notes-from-tag
+            else
+              echo "Release $TAG already published — safe re-run, skipping"
+            fi
+          elif grep -qi 'not found' err.txt; then
+            gh release create "$TAG" ./radical-reborn.vsix --verify-tag --notes-from-tag
+          else
+            cat err.txt
+            echo "::error::could not determine release state for $TAG"
+            exit 1
+          fi
+
+  openvsx:
+    needs: release
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      # Checkout MUST precede the artifact download — checkout cleans the
+      # workspace and would delete a pre-downloaded .vsix.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      # No `npm ci`: publish:ovsx is pure exact-pinned npx (needs node only).
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .nvmrc
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: vsix
+
+      - name: Publish to Open VSX (idempotent)
+        run: npm run publish:ovsx -- --skip-duplicate
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+
+  zed-bump:
+    needs: release
+    runs-on: ubuntu-latest
+    environment: release
+    # The action operates purely via COMMITTER_TOKEN API calls — no checkout,
+    # no GITHUB_TOKEN.
+    permissions: {}
+    steps:
+      # Keep in sync with zed-bump-manual.yml.
+      - name: Skip if absent, already bumped, or bump PR already open
+        id: guard
+        env:
+          GH_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+        run: |
+          V="${GITHUB_REF_NAME#v}"
+          TOML="$(curl -fsSL https://raw.githubusercontent.com/zed-industries/extensions/main/extensions.toml)"
+          if ! grep -q '^\[radical-reborn-theme\]' <<<"$TOML"; then
+            echo "::warning::extension not in the registry yet (first-submission PR unmerged) — catch up later via the 'Zed bump (manual)' workflow"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif grep -A4 '^\[radical-reborn-theme\]' <<<"$TOML" | grep -q "version = \"$V\""; then
+            echo "registry already at $V — safe re-run, skipping"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif [ -n "$(gh search prs --repo zed-industries/extensions --state open 'radical-reborn-theme' --json number --jq '.[].number')" ]; then
+            echo "open radical-reborn-theme PR already exists upstream — safe re-run, skipping"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open version-bump PR against zed-industries/extensions
+        if: steps.guard.outputs.skip != 'true'
+        uses: huacnlee/zed-extension-action@82920ff0876879f65ffbcfa3403589114a8919c6 # v2.0.0
+        with:
+          # Explicit: the default would wrongly resolve to 'radical-reborn'
+          # (repo name), not the registry id.
+          extension-name: radical-reborn-theme
+          # The machine account's fork — created during Phase 2 one-time setup.
+          # Update here if the account name differs from aquaoctet-bot.
+          push-to: aquaoctet-bot/extensions
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}

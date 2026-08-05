@@ -6,8 +6,9 @@
  *
  * Run via: `npm run check:contrast`
  *
- * Phase 4's `build-all.ts` orchestrator will call this alongside the
- * VSCode and Zed adapter builds.
+ * Standalone gate — deliberately NOT invoked by the `build-all.ts`
+ * orchestrator. CI and the release flow run it as an explicit step, and
+ * this script is the only writer of `dist/apca-report.txt`.
  */
 import { promises as fs } from 'node:fs'
 import path from 'node:path'

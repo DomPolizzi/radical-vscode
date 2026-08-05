@@ -1,197 +1,150 @@
 # Release runbook — Radical Reborn
 
-Single source of truth for shipping a new version of **Radical Reborn** to all three distribution channels: the **Zed Extensions registry**, the **Open VSX registry** (VSCodium/Cursor/Windsurf), and a **`.vsix`** attached to the GitHub Release (stock VSCode). One `package.json` version bump drives all three — never bump them independently.
+Ships every version to all three channels — the **Zed Extensions registry**, **Open VSX** (VSCodium/Cursor/Windsurf), and a **`.vsix`** on the GitHub Release — from one `package.json` version bump. Never bump channels independently.
 
-## Pre-flight
+**The pipeline does the publishing.** Pushing an annotated `v*` tag runs `.github/workflows/release.yml`: gates → `.vsix` → GitHub Release → Open VSX publish + Zed version-bump PR. Per-release manual work is exactly: **bump + CHANGELOG + annotated tag push**, then watch the run. The [manual fallback](#8-manual-fallback) exists for pipeline outages.
 
-- [ ] CI green on `main`
-- [ ] All planned PRs merged
-- [ ] Working tree clean (`git status`)
-- [ ] On `main` and up to date (`git pull origin main`)
+## One-time setup (before the first automated release)
+
+- [ ] **Open VSX**: sign in at open-vsx.org with GitHub → sign the **Eclipse Publisher Agreement** (unsigned, `ovsx publish` fails with what looks like a token error — `docs/solutions/2026-06-09-openvsx-publisher-agreement.md`) → create a local token and a separate CI token → create the namespace **without putting the token in argv/shell history**: `OVSX_PAT=<token> npx ovsx create-namespace aquaoctet`. Optional: file the EclipseFdn ownership claim to clear the "unverified" badge.
+- [ ] **Machine account** (`aquaoctet-bot` — if named differently, update `push-to:` in both workflow files): create it, fork `zed-industries/extensions` under it, sign Zed's CLA with it. The human maintainer signs the CLA separately (author of the first-submission PR). Its classic PAT (`repo` + `workflow` scopes, 90-day expiry) becomes `COMMITTER_TOKEN`. **Never mint this PAT on the maintainer account** — a maintainer-account PAT could rewrite this repo's own pipeline; the machine account's blast radius is one disposable fork.
+- [ ] **Secrets**: GitHub Environment named `release` with deployment tag rule `v*`; add `OVSX_PAT` (CI token) and `COMMITTER_TOKEN` there — not as repo-wide secrets.
+- [ ] **Immutable releases**: enable in repo settings (closes asset-swap-after-publish on the channel the README sends VSCode users to).
+- [ ] Actions failure emails enabled (github.com/settings/notifications → Actions); Watching this repo (at least Issues).
+- [ ] Record both token expiry dates here + calendar reminders: `OVSX_PAT` expires ______ · `COMMITTER_TOKEN` expires ______.
+
+## Pre-flight (Go/No-Go — any failed line is a No-Go)
+
+```bash
+git remote get-url origin                    # AquaOctet/radical-reborn (SSH or HTTPS)
+gh auth status && git push --dry-run origin main
+git status --porcelain                       # clean
+git tag -l "v<NEW VERSION>"; git ls-remote --tags origin "v<NEW VERSION>"   # both empty (burn-version policy)
+gh api "repos/AquaOctet/radical-reborn/commits/$(git rev-parse HEAD)/check-runs" \
+  --jq '.check_runs[] | [.name,.conclusion] | @tsv'                          # all success
+
+# Guard replica (the pipeline re-checks these; failing THERE burns the version)
+V=<NEW VERSION>; [ "$(node -p "require('./package.json').version")" = "$V" ] \
+  && grep -q "version = \"$V\"" extension.toml \
+  && grep -q "^## \[$V\]" CHANGELOG.md && echo GUARDS-OK
+
+# Split-brain + package dry-run BEFORE tagging (catches .vscodeignore drift tag-free)
+npm run build && npm run check:contrast && npm run check:drift
+npm run package && unzip -Z1 radical-reborn.vsix | LC_ALL=C sort | diff -u .github/vsix-manifest.txt -
+
+# Publish-precondition proofs (no publishing happens)
+curl -s -o /dev/null -w '%{http_code}\n' https://open-vsx.org/api/aquaoctet   # 200
+npx ovsx verify-pat aquaoctet                # with OVSX_PAT in env — proves token + agreement
+curl -sI -H "Authorization: token $COMMITTER_TOKEN" https://api.github.com/user | grep -i x-oauth-scopes
+#   must list repo, workflow — header ABSENT means fine-grained PAT = wrong type
+```
 
 ## 1. Bump the version
 
-`package.json:version` is the single source of truth. The build script propagates it into `extension.toml` automatically.
-
 ```bash
 npm version <patch|minor|major> --no-git-tag-version
-# e.g. npm version minor   →   0.1.0 → 0.2.0
 ```
 
-This updates `package.json` and `package-lock.json`. The git tag step is deferred to step 4.
+`package.json:version` is the single source of truth; the build propagates it into `extension.toml`.
 
-## 2. Build everything
+## 2. Update the CHANGELOG
+
+Add `## [<NEW VERSION>] - YYYY-MM-DD` at the top with Added/Changed/Fixed. The pipeline's release notes come from the **annotated tag message** — step 4 copies this section into it.
+
+## 3. Rebuild + run the gates locally
 
 ```bash
-npm run build
+npm run build && npm run lint && npm run typecheck
+npm run check:contrast        # writes dist/apca-report.txt (build does NOT)
+npm run check:drift           # committed artifacts == fresh build
+npm run validate && npm test
 ```
 
-Verify:
+If snapshots changed intentionally: `npx vitest run -u`, review the diff carefully (every color change surfaces there), `git add tests/__snapshots__/`.
 
-- `dist/RadicalReborn.json` updated
-- `themes/radical-reborn.json` updated
-- `extension.toml` rendered with the new version
-- `dist/apca-report.txt` produced (no new blocking failures)
-
-If APCA reports new non-exempt failures, **stop**. Either tweak the palette or add an exemption with justification (`theme/utils/apca-exemptions.ts`) before continuing.
-
-## 3. Run the gates locally
-
-```bash
-npm run lint
-npm run typecheck
-npm run validate    # Zed schema validation
-npm test            # full suite, incl. snapshots + scope coverage
-```
-
-If snapshots changed intentionally:
-
-```bash
-npx vitest run -u
-git add tests/__snapshots__/
-```
-
-Review the snapshot diff carefully — any palette change shows up here.
-
-## 4. Update the CHANGELOG
-
-Add a new section at the top of `CHANGELOG.md`:
-
-```markdown
-## [<NEW VERSION>] - YYYY-MM-DD
-
-### Added / Changed / Fixed
-- ...
-```
-
-## 5. Commit, tag, push
+## 4. Commit, tag (annotated!), push
 
 ```bash
 git add package.json package-lock.json extension.toml dist/ themes/ tests/__snapshots__/ CHANGELOG.md
 git commit -m "release: v<NEW VERSION>"
-git tag "v<NEW VERSION>"
-git push origin main "v<NEW VERSION>"
+git push origin main                          # tag must land on main BEFORE the tag push
+git tag -a "v<NEW VERSION>" -m "<paste the CHANGELOG section>"
+git for-each-ref refs/tags/v<NEW VERSION> --format='%(objecttype)'   # must print: tag (annotated)
+git push origin "v<NEW VERSION>"              # ← this fires the release pipeline
 ```
 
-## 6. Publish the VSCode build (.vsix + Open VSX)
+Push **one tag at a time** — the pipeline's concurrency group keeps only one pending run; a second queued release silently replaces the first (re-run any release that shows "canceled").
 
-Ships from the same version bump as Zed — no separate version number.
+## 5. Watch the release (this is the entire monitoring plan)
 
-### 6a. Package the `.vsix`
+| When | Do |
+| --- | --- |
+| **T+0** | `gh run watch $(gh run list --workflow release.yml -L1 --json databaseId -q '.[0].databaseId') --exit-status` — the only synchronous window is the one you hold open. |
+| **T+1h** | Zed bump PR merged by `zed-zippy[bot]` (`gh pr list -R zed-industries/extensions --search "radical-reborn-theme" --state all -L1`) — load-bearing check: the machine account's PR notifications land where nobody reads. Then the consistency one-liner below. |
+| **T+24h** | Open VSX listing renders (README/icon): https://open-vsx.org/extension/aquaoctet/radical-reborn — no webhooks exist; this curl/eyeball IS the monitoring. Skim repo issues. |
 
 ```bash
-npm run package        # runs vscode:prepublish (build) then vsce package
-unzip -l radical-reborn.vsix
+# Version consistency across all three channels vs local
+V=$(node -p "require('./package.json').version"); \
+GH=$(gh release view "v$V" --json tagName -q .tagName 2>/dev/null); \
+OV=$(curl -sf https://open-vsx.org/api/aquaoctet/radical-reborn | jq -r .version); \
+ZED=$(curl -sf https://raw.githubusercontent.com/zed-industries/extensions/main/extensions.toml | grep -A3 '^\[radical-reborn-theme\]' | grep -m1 version | sed 's/.*"\(.*\)"/\1/'); \
+echo "local=$V gh=${GH#v} ovsx=$OV zed=$ZED"
 ```
 
-The listing must contain **only**: `package.json`, `README.md`, `LICENSE`, `CHANGELOG.md`, `dist/RadicalReborn.json`, `assets/icon.png` (plus vsce's `extension.vsixmanifest` and `[Content_Types].xml`). If `theme/`, `tests/`, `node_modules/`, or the 1.6 MB root `icon.png` appear, fix `.vscodeignore` before publishing.
+## 6. First-time Zed submission (manual — once, before automation covers Zed)
 
-### 6b. Attach the `.vsix` to the GitHub Release
-
-```bash
-gh release create "v<NEW VERSION>" radical-reborn.vsix \
-  --title "v<NEW VERSION>" --notes-from-tag
-# If the release already exists:
-gh release upload "v<NEW VERSION>" radical-reborn.vsix
-```
-
-This is the artifact the README's "download the `.vsix`" link points at.
-
-### 6c. Publish to Open VSX
-
-**One-time setup:**
-
-1. Sign in at https://open-vsx.org with GitHub.
-2. **Sign the Eclipse Foundation Publisher Agreement** — Open VSX rejects publishing until this is done. This is the most common first-publish failure.
-3. Create a token at https://open-vsx.org/user-settings/tokens.
-4. Create the namespace (must equal `package.json:publisher`, i.e. `aquaoctet`):
-   ```bash
-   npx ovsx create-namespace aquaoctet -p <OPEN_VSX_TOKEN>
-   ```
-
-**Each release:**
+The registry indexes themes as a git **submodule pointer + version**; the bump automation edits an *existing* entry and hard-fails on a missing one, so the first submission is by hand:
 
 ```bash
-OVSX_PAT=<OPEN_VSX_TOKEN> npm run publish:ovsx
-```
-
-Confirm https://open-vsx.org/extension/aquaoctet/radical-reborn shows the new version.
-
-## 7. Submodule update PR to `zed-industries/extensions`
-
-> **`AquaOctet/radical-reborn` stays the sole source of truth.** This is how Zed's public registry indexes *every* theme: the registry only stores a git **submodule pointer + version** back to your repo (same as Catppuccin, Dracula, etc.). You are not contributing code to or joining the `zed-industries` project — you're registering a pointer so the theme appears in Zed's Extensions panel. Skip this entire section if you only ever install via the dev-extension path locally.
-
-First-time setup: fork `https://github.com/zed-industries/extensions`.
-
-```bash
-# Clone your fork (one-time)
-git clone https://github.com/<you>/extensions zed-extensions
-cd zed-extensions
+git clone https://github.com/aquaoctet-bot/extensions zed-extensions && cd zed-extensions
 git remote add upstream https://github.com/zed-industries/extensions
+git fetch upstream && git checkout -b add-radical-reborn-theme upstream/main
+git submodule add https://github.com/AquaOctet/radical-reborn extensions/radical-reborn-theme
+cd extensions/radical-reborn-theme && git checkout "v<VERSION>" && cd ../..
+$EDITOR extensions.toml     # [radical-reborn-theme] / submodule = ... / version = "<VERSION>"
+pnpm sort-extensions        # registry CI requires normalized ordering
+git add . && git commit -m "Add radical-reborn-theme v<VERSION>" && git push origin HEAD
 ```
 
-Update flow:
+Open the PR against `zed-industries/extensions:main`. **Submodule URL must be HTTPS** (SSH is rejected) and the pinned commit must be on a branch. Expectations: the CLA check must go green, and **new-extension PRs are human-merged — days to weeks** (observed: one submission took ~4 months). Only *version bumps* auto-merge, via `zed-zippy[bot]` (~25 min observed). While the PR is open, add a "pending registry review" note to the README's Zed section; remove it at merge.
+
+## 7. Failure policies
+
+| Situation | Policy |
+| --- | --- |
+| Gates fail on the pushed tag | **Burn the version.** Fix forward, bump patch, new tag. Never move or delete a pushed `v*` tag — the rollback flow depends on tags as records. |
+| Partial publish (some channels red) | "Re-run failed jobs." Every channel step is idempotent: flake-safe release create, `ovsx --skip-duplicate`, 3-state Zed guard. |
+| Re-run unavailable (>30 days) or artifact expired (>90 days) | Fall back to the [manual flow](#8-manual-fallback) for the missing channel(s); for Zed use the **"Zed bump (manual)"** workflow dispatch. |
+| Zed job skipped (extension not in registry yet) | Expected until the first-submission PR merges — then dispatch "Zed bump (manual)" with the latest tag. |
+| Queued release run shows "canceled" | Concurrency replacement — re-run it after the active release finishes. |
+| Broken version shipped | `docs/runbooks/rollback.md`. |
+
+## 8. Manual fallback
+
+Same artifacts, by hand — only when the pipeline is unavailable:
 
 ```bash
-cd zed-extensions
-git fetch upstream
-git checkout -b update/radical-reborn-theme-<NEW VERSION> upstream/main
-
-# First publish: add submodule. Subsequent updates: bump it.
-# First publish only:
-git submodule add https://github.com/AquaOctet/radical-reborn extensions/radical-reborn-theme
-
-# Subsequent updates:
-cd extensions/radical-reborn-theme
-git fetch origin
-git checkout v<NEW VERSION>
-cd ../..
-
-# Update top-level extensions.toml (alphabetical order)
-$EDITOR extensions.toml
-# Find or insert:
-#   [radical-reborn-theme]
-#   submodule = "extensions/radical-reborn-theme"
-#   version = "<NEW VERSION>"
-
-# Normalize sorting (registry CI requires this)
-pnpm sort-extensions
-
-git add .
-git commit -m "Add radical-reborn-theme v<NEW VERSION>"   # or "Update ... to v..."
-git push origin update/radical-reborn-theme-<NEW VERSION>
+npm run build && npm run check:contrast && npm run check:drift && npm test && npm run validate
+npm run package && unzip -Z1 radical-reborn.vsix | LC_ALL=C sort | diff -u .github/vsix-manifest.txt -
+gh release create "v<VERSION>" radical-reborn.vsix --verify-tag --notes-from-tag
+OVSX_PAT=<local token> npm run publish:ovsx -- --skip-duplicate
+# Zed: dispatch "Zed bump (manual)" with the tag, or the fork flow from section 6
 ```
 
-Open the PR against `zed-industries/extensions:main`. CI auto-validates and auto-merges on green within ~12-24 hours (faster for updates — observed ~25 minutes for version-bump PRs).
+## 9. Credential rotation & compromise
 
-## 8. Verify the published extension
+- **Rotation** (before expiry): mint the replacement (CI-scoped `OVSX_PAT` at open-vsx.org token settings; machine-account classic PAT `repo`+`workflow` for `COMMITTER_TOKEN`), update the `release` Environment secret, update the expiry dates above.
+- **Compromise**: revoke at open-vsx.org/user-settings/tokens and the machine account's PAT settings immediately. Open VSX has **no self-serve unpublish** — if a malicious version shipped, contact Open VSX admins and publish a fixed higher version. Audit the fork (`aquaoctet-bot/extensions`) for unexpected branches/PRs.
+- Tool-version bumps (`@vscode/vsce`, `ovsx` exact pins in `package.json` scripts) happen only via reviewed PR — Dependabot does not track npx pins.
 
-After the PR merges:
-
-1. Open Zed → Extensions panel
-2. Search "Radical Reborn"
-3. Click Install (or Update)
-4. Confirm the version number matches what shipped
-
-If the registry build fails, the PR will reopen with a comment. Common causes:
-
-- `extension.toml` `id` doesn't end in `-theme` (registry convention; soft requirement)
-- License file unrecognized — must be MIT (we are), Apache-2.0, BSD-2/3, GPL-3.0, LGPL-3.0, CC BY 4.0, Unlicense, or zlib
-- Schema validation fails — run `npm run validate` locally to confirm
-
-## 9. Post-release
-
-- [ ] Tag matches what's published (`git tag --list 'v*'`)
-- [ ] `.vsix` attached to the GitHub Release; Open VSX listing renders the README correctly
-- [ ] Open VSX version == `.vsix` version == `package.json` version
-- [ ] `extension.toml` version in our repo == version in `zed-industries/extensions/extensions.toml`
-
-## Common rejections from registry CI
+## Common rejections from Zed registry CI
 
 | Cause | Fix |
 | --- | --- |
-| Submodule URL is SSH (`git@github.com:...`) | Use HTTPS only — `git submodule set-url` to update |
-| `extensions.toml` not sorted | Run `pnpm sort-extensions` before committing |
-| Theme JSON fails schema validation | Run `npm run validate` locally; check `$schema` URL is exact |
-| LICENSE file not recognized | Ensure file is `LICENSE` (no extension) at repo root with valid SPDX-identified content |
-| Duplicate id in registry | Pick a different id or coordinate with the existing owner |
+| Submodule URL is SSH (`git@github.com:...`) | HTTPS only — `git submodule set-url` |
+| `extensions.toml` not sorted | `pnpm sort-extensions` before committing |
+| Theme JSON fails schema validation | `npm run validate` locally; `$schema` URL must be exact |
+| LICENSE unrecognized | `LICENSE` (no extension) at repo root, valid SPDX text (MIT ✓) |
+| Version mismatch extensions.toml ↔ extension.toml | The pipeline's dual-manifest guard prevents this; manual PRs: re-check both |
+| Duplicate id | Coordinate with the existing owner or pick a new id |

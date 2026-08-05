@@ -39,8 +39,8 @@
     "editor.lineHighlightBorder": "#0000",
     "editor.rangeHighlightBackground": "#fd43cd12",
     "editor.rangeHighlightBorder": "#0000",
-    "editor.selectionBackground": "#874df84d",
-    "editor.selectionHighlightBackground": "#874df81a",
+    "editor.selectionBackground": "#864df84d",
+    "editor.selectionHighlightBackground": "#864df81a",
     "editor.selectionHighlightBorder": "#6e45c7",
     "editor.findMatchBackground": "#0000",
     "editor.findMatchBorder": "#9736c08c",
@@ -95,6 +95,9 @@
     "minimapGutter.addedBackground": "#a3ff57",
     "minimapGutter.modifiedBackground": "#ffb000",
     "minimapGutter.deletedBackground": "#ff427b",
+    "minimapSlider.background": "#cd8ce71a",
+    "minimapSlider.hoverBackground": "#cd8ce740",
+    "minimapSlider.activeBackground": "#cd8ce766",
     "extensionButton.prominentForeground": "#a8ffef",
     "extensionButton.prominentBackground": "#ff428e",
     "extensionButton.prominentHoverBackground": "#ff6ba6",
@@ -166,10 +169,10 @@
     "peekViewTitleLabel.foreground": "#a8ffef",
     "peekViewTitleDescription.foreground": "#7c9c9e",
     "progressBar.background": "#602976",
-    "scrollbar.shadow": "#ff428e80",
-    "scrollbarSlider.background": "#ff428e1a",
-    "scrollbarSlider.hoverBackground": "#ff428e40",
-    "scrollbarSlider.activeBackground": "#ff428e66",
+    "scrollbar.shadow": "#cd8ce780",
+    "scrollbarSlider.background": "#cd8ce71a",
+    "scrollbarSlider.hoverBackground": "#cd8ce740",
+    "scrollbarSlider.activeBackground": "#cd8ce766",
     "sideBar.background": "#12111f",
     "sideBar.foreground": "#90b0b3",
     "sideBar.border": "#1D1E7D",
@@ -231,7 +234,7 @@
     "terminal.background": "#141322",
     "terminal.foreground": "#A8D2D4",
     "terminal.border": "#242560",
-    "terminal.selectionBackground": "#874df84d",
+    "terminal.selectionBackground": "#864df84d",
     "terminalCursor.background": "#ff428e",
     "terminalCursor.foreground": "#defff7",
     "terminal.ansiBlack": "#30317D",
@@ -339,13 +342,14 @@
       "scope": "keyword.control.as",
       "settings": {
         "fontStyle": "bold underline",
-        "foreground": "#FF1998"
+        "foreground": "#aa86fd"
       }
     },
     {
       "scope": "keyword.operator.type.asserts, keyword.operator.expression.is",
       "settings": {
-        "foreground": "#FB4293"
+        "fontStyle": "bold",
+        "foreground": "#aa86fd"
       }
     },
     {

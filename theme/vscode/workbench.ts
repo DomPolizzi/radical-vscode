@@ -15,6 +15,7 @@
  */
 
 import { alpha } from '../utils/index.js'
+import { LAVENDERS, ULTRAVIOLETS } from '../palette.js'
 
 //
 // Theme colors
@@ -73,7 +74,7 @@ const BORDERS = {
 const MITO_PURPLE_HOVER = '#222745'
 const VSCODE_PURPLE = '#602976'
 const VSCODE_PURPLE_HOVER = '#913eb4'
-const RADVENDER = '#864df8'
+const RADVENDER = ULTRAVIOLETS[200]
 const INLAYS = '#ff42b788'
 
 const CORAL = '#fe6083'
@@ -83,9 +84,10 @@ const HUE_PURPLE = '#d043cf'
 
 // --- Highlighting
 
-const HIGHLIGHT_CURRENT_LINE = '#d043cf'
+const HIGHLIGHT_CURRENT_LINE = HUE_PURPLE
 const HIGHLIGHT_RANGE = '#fd43cd'
-const HIGHLIGHT_CURRENT_SELECTION = '#874df8'
+// Historically '#874df8' — one digit off RADVENDER's '#864df8'; unified on the palette stop.
+const HIGHLIGHT_CURRENT_SELECTION = ULTRAVIOLETS[200]
 const HIGHLIGHT_CURRENT_SELECTION_MATCH_BORDER = '#6e45c7'
 const HIGHLIGHT_MATCH = '#9736c0'
 const HIGHLIGHT_ADDL_MATCH = '#f179e1'
@@ -209,12 +211,18 @@ const dropdown = {
 // Scroll bar controls
 //
 
+// Lavender family, matching the line-highlight direction (see assets/TODO) and
+// the Zed adapter's scrollbar consts in theme/zed/style.ts. Shared by the
+// minimap sliders below so the two chromes can't drift apart.
+const SCROLLBAR_LAVENDER = LAVENDERS[400]
+
 const scrollBarControl = {
-  'scrollbar.shadow': SHADOW,
-  // Scroll bar is primary with decreasing opacity
-  'scrollbarSlider.background': alpha(PRIMARY, 0.1),
-  'scrollbarSlider.hoverBackground': alpha(PRIMARY, 0.25),
-  'scrollbarSlider.activeBackground': alpha(PRIMARY, 0.4),
+  // Deliberately NOT the shared SHADOW const — that also feeds widget.shadow.
+  'scrollbar.shadow': alpha(SCROLLBAR_LAVENDER, 0.5),
+  // Scroll bar is lavender with decreasing opacity
+  'scrollbarSlider.background': alpha(SCROLLBAR_LAVENDER, 0.1),
+  'scrollbarSlider.hoverBackground': alpha(SCROLLBAR_LAVENDER, 0.25),
+  'scrollbarSlider.activeBackground': alpha(SCROLLBAR_LAVENDER, 0.4),
 }
 
 //
@@ -525,6 +533,10 @@ const minimap = {
   'minimapGutter.addedBackground': GIT_ADDED,
   'minimapGutter.modifiedBackground': GIT_MODIFIED,
   'minimapGutter.deletedBackground': GIT_DELETED,
+  // Mirrors scrollbarSlider so the two chromes stay in lockstep
+  'minimapSlider.background': alpha(SCROLLBAR_LAVENDER, 0.1),
+  'minimapSlider.hoverBackground': alpha(SCROLLBAR_LAVENDER, 0.25),
+  'minimapSlider.activeBackground': alpha(SCROLLBAR_LAVENDER, 0.4),
 }
 
 //
@@ -785,7 +797,7 @@ const terminal = {
   // Border between multiple terminals
   'terminal.border': BORDERS[200],
 
-  'terminal.selectionBackground': '#874df84d',
+  'terminal.selectionBackground': alpha(ULTRAVIOLETS[200], 0.3),
 
   'terminalCursor.background': '#ff428e',
   'terminalCursor.foreground': '#defff7',

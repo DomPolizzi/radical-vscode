@@ -39,14 +39,15 @@
     "build:vscode": "tsx theme/vscode/build.ts",
     "build:zed": "tsx theme/zed/build.ts",
     "check:contrast": "tsx theme/apca-check.ts",
+    "check:drift": "git diff --exit-code dist/ themes/ extension.toml",
     "format": "prettier --write '**/*.{md,ts,json}'",
     "lint": "eslint theme",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "validate": "ajv validate -c ajv-formats -s schemas/zed-v0.2.0.json -d themes/radical-reborn.json",
     "vscode:prepublish": "npm run build",
-    "package": "npx --yes @vscode/vsce@^3 package --no-dependencies --out radical-reborn.vsix",
-    "publish:ovsx": "npx --yes ovsx@^0.10 publish radical-reborn.vsix"
+    "package": "npx --yes @vscode/vsce@3.9.2 package --no-dependencies --out radical-reborn.vsix",
+    "publish:ovsx": "npx --yes ovsx@1.1.0 publish radical-reborn.vsix"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
