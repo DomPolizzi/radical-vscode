@@ -1,0 +1,83 @@
+# Manual Zed registry bump — two jobs this workflow serves:
+#
+#   1. CATCH-UP: a release tagged while the FIRST-submission PR was still
+#      unmerged skipped its zed-bump job (and GitHub run re-runs expire after
+#      ~30 days, while first-submission review has taken months). Once the
+#      first PR merges, dispatch this with the latest tag.
+#   2. ROLLBACK: dispatch with an OLDER tag to open a downgrade PR
+#      (docs/runbooks/rollback.md) — comment the `Rollback:` prefix on the PR
+#      by hand; the action templates its own title.
+#
+# Same hardening as release.yml: SHA-pinned action, `release` Environment,
+# zero job permissions, input reaches shell only via env.
+
+name: Zed bump (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to point the Zed registry at (e.g. v0.1.1; an older tag = rollback)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  zed-bump:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions: {}
+    steps:
+      # `tag` is the one user-typed value in the pipeline — env-only, never
+      # ${{ inputs.tag }} inside run: (template injection).
+      - name: Validate input tag
+        env:
+          TAG: ${{ inputs.tag }}
+          REPO_URL: https://github.com/${{ github.repository }}
+        run: |
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::tag must be vX.Y.Z, got '$TAG'"; exit 1; }
+          git ls-remote --exit-code "$REPO_URL" "refs/tags/$TAG" >/dev/null || { echo "::error::tag $TAG does not exist on the repo"; exit 1; }
+
+      # Keep in sync with release.yml's zed-bump guard. One deliberate
+      # difference: absent-from-registry is an ERROR here (you dispatched
+      # specifically to bump — the first submission is manual, see
+      # docs/runbooks/release.md), while release.yml warns + skips.
+      - name: Skip if already at version or bump PR already open
+        id: guard
+        env:
+          GH_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          V="${TAG#v}"
+          TOML="$(curl -fsSL https://raw.githubusercontent.com/zed-industries/extensions/main/extensions.toml)"
+          if ! grep -q '^\[radical-reborn-theme\]' <<<"$TOML"; then
+            echo "::error::extension not in the registry — the first submission is manual (docs/runbooks/release.md)"
+            exit 1
+          elif grep -A4 '^\[radical-reborn-theme\]' <<<"$TOML" | grep -q "version = \"$V\""; then
+            echo "registry already at $V — nothing to do"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif [ -n "$(gh search prs --repo zed-industries/extensions --state open 'radical-reborn-theme' --json number --jq '.[].number')" ]; then
+            echo "::warning::an open radical-reborn-theme PR already exists upstream — resolve it before dispatching again"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open version PR against zed-industries/extensions
+        if: steps.guard.outputs.skip != 'true'
+        uses: huacnlee/zed-extension-action@82920ff0876879f65ffbcfa3403589114a8919c6 # v2.0.0
+        with:
+          extension-name: radical-reborn-theme
+          # Machine account fork — keep in sync with release.yml.
+          push-to: aquaoctet-bot/extensions
+          tag-name: ${{ inputs.tag }}
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}

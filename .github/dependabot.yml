@@ -1,0 +1,11 @@
+# Keeps the SHA-pinned actions in ci.yml / release.yml / zed-bump-manual.yml
+# from fossilizing — Dependabot PRs bump the pinned SHAs (with version
+# comments) monthly. NOTE: the exact-pinned npx tools in package.json scripts
+# (@vscode/vsce, ovsx) are NOT tracked here — bump those by editing the script
+# line in a reviewed PR (see docs/runbooks/release.md).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
