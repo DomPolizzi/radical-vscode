@@ -2,7 +2,7 @@
   "name": "radical-reborn",
   "displayName": "Radical Reborn",
   "description": "A maintained fork of Radical — retro-futuristic dark theme for VSCode and Zed.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "aquaoctet",
   "license": "MIT",
   "type": "module",

@@ -1,6 +1,6 @@
 id = "radical-reborn-theme"
 name = "Radical Reborn"
-version = "0.1.0"
+version = "0.1.1"
 schema_version = 1
 authors = ["Aqua <neku113@gmail.com>"]
 description = "A maintained fork of Radical — retro-futuristic dark theme."

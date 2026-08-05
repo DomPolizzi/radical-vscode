@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 The upstream "Radical" changelog (Dan Hedgecock, 2018-2022) is preserved at [docs/upstream-CHANGELOG.md](./docs/upstream-CHANGELOG.md).
 
+## [0.1.1] - 2026-08-05
+
+### Changed
+
+- Type assertions (`as`, `asserts`, `is`) now render in ultraviolet with bold emphasis in VSCode, replacing the hot pink that blended into other keywords.
+- Scrollbar and minimap chrome moved from pink to lavender in both editors, matching the active-line highlight family.
+- Terminal and editor selection unified on a single violet (previously two near-identical hexes one digit apart).
+
+### Added
+
+- Minimap thumb colors in Zed and minimap sliders in VSCode, sharing the scrollbar values so the two can't drift apart.
+- README: overrides guide (tweak any color from settings, no fork needed) and a post-install setup pointer.
+- Tag-push release pipeline: pushing a version tag builds, checks contrast, packages the `.vsix`, and publishes to the GitHub Release, Open VSX, and the Zed registry from one bump.
+- Schema coverage test for the generated Zed JSON — new engine keys are adopted or skipped deliberately (see `docs/audits/`).
+
+### Fixed
+
+- The v0.1.0 GitHub release was published without the packaged `.vsix`; the artifact was attached retroactively and this release supersedes it.
+
 ## [0.1.0] - 2026-05-08
 
 ### Added
