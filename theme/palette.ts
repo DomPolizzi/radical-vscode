@@ -48,6 +48,18 @@ export const LAVENDERS = {
   500: '#ec99f7',
 } as const satisfies HexStops
 
+/**
+ * Saturated ~260° blue-violets — selection chrome and assertion emphasis.
+ * Distinct from LAVENDERS (pale orchids, used for types): these read as vivid
+ * violet, not pastel. Stops are lightest-first; every stop has a real consumer
+ * (100: text-grade, chosen to clear APCA Lc 45 on bgPrimary; 200: chrome /
+ * selection grade — do not use 200 for text, it measures ~Lc 29).
+ */
+export const ULTRAVIOLETS = {
+  100: '#aa86fd',
+  200: '#864df8',
+} as const satisfies HexStops
+
 export const TEALS = {
   100: '#A9FEF7',
   200: '#A4FFE4',

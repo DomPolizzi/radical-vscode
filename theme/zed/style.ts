@@ -17,6 +17,13 @@ const ACTIVE_LINE_BG = alpha(LAVENDERS[400], 0.08)
 const READ_HIGHLIGHT = alpha(BLUES[200], 0.18)
 const WRITE_HIGHLIGHT = alpha(PINKS[400], 0.22)
 
+// Scrollbar + minimap thumbs share one lavender source (matching the active-line
+// family, see assets/TODO) so the two chromes can't drift apart. Mirrored by
+// SCROLLBAR_LAVENDER in theme/vscode/workbench.ts.
+const SCROLLBAR_THUMB = alpha(LAVENDERS[400], 0.2)
+const SCROLLBAR_THUMB_HOVER = alpha(LAVENDERS[400], 0.35)
+const SCROLLBAR_THUMB_ACTIVE = alpha(LAVENDERS[400], 0.45)
+
 export const zedStyle = {
   // --- Surfaces / borders
   background: to8(semantic.bgPrimary),
@@ -95,11 +102,19 @@ export const zedStyle = {
   'search.active_match_background': to8(PINKS[500]),
 
   // --- Scrollbar
-  'scrollbar.thumb.background': alpha(semantic.accent, 0.2),
-  'scrollbar.thumb.hover_background': alpha(semantic.accent, 0.35),
+  'scrollbar.thumb.background': SCROLLBAR_THUMB,
+  'scrollbar.thumb.hover_background': SCROLLBAR_THUMB_HOVER,
+  // Post-v0.2.0 engine key (see schemas/zed-v0.2.0-extended.json)
+  'scrollbar.thumb.active_background': SCROLLBAR_THUMB_ACTIVE,
   'scrollbar.thumb.border': '#00000000',
   'scrollbar.track.background': to8(semantic.bgPrimary),
   'scrollbar.track.border': '#00000000',
+
+  // --- Minimap thumb (post-v0.2.0 engine keys; mirrors the scrollbar consts)
+  'minimap.thumb.background': SCROLLBAR_THUMB,
+  'minimap.thumb.hover_background': SCROLLBAR_THUMB_HOVER,
+  'minimap.thumb.active_background': SCROLLBAR_THUMB_ACTIVE,
+  'minimap.thumb.border': '#00000000',
 
   // --- Terminal (full ANSI: 8 base + bright + dim)
   'terminal.background': to8(semantic.bgPrimary),

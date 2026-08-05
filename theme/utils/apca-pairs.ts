@@ -23,6 +23,9 @@ export const SEMANTIC_PAIRS: ContrastPair[] = [
   { name: 'support', fg: semantic.support, bg: semantic.bgPrimary, minLc: 60 },
   { name: 'variable', fg: semantic.variable, bg: semantic.bgPrimary, minLc: 60 },
 
+  // --- Syntax emphasis (bold text — Lc 45 emphasized-text tier, see utils/apca.ts)
+  { name: 'typeAssertion', fg: semantic.typeAssertion, bg: semantic.bgPrimary, minLc: 45 },
+
   // --- Foreground hierarchy
   { name: 'fgPrimary', fg: semantic.fgPrimary, bg: semantic.bgPrimary, minLc: 75 },
   { name: 'fgMuted', fg: semantic.fgMuted, bg: semantic.bgPrimary, minLc: 60 },

@@ -1,5 +1,5 @@
 import colors from '../semantic.js'
-import { LAVENDERS, PINKS } from '../palette.js'
+import { LAVENDERS } from '../palette.js'
 import { token } from '../utils/index.js'
 
 // The generic syntax tokens are themed here according to the Textmate naming
@@ -47,14 +47,15 @@ export const tokenColors = [
     scope: 'keyword.control.as',
     settings: {
       fontStyle: 'bold underline',
-      foreground: PINKS[600],
+      foreground: colors.typeAssertion,
     },
   },
   {
-    // TS function assertions
+    // TS function assertions — bold to match the Lc 45 emphasized-text tier
     scope: 'keyword.operator.type.asserts, keyword.operator.expression.is',
     settings: {
-      foreground: PINKS[500],
+      fontStyle: 'bold',
+      foreground: colors.typeAssertion,
     },
   },
   {

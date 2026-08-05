@@ -1,4 +1,4 @@
-import { GRAYS, CHARTREUSES, PINKS, TEALS } from './palette.js'
+import { GRAYS, CHARTREUSES, PINKS, TEALS, ULTRAVIOLETS } from './palette.js'
 
 /**
  * Tier 2 — Semantic, role-based, editor-neutral token slots.
@@ -21,6 +21,15 @@ const semantic = {
   support: '#7cb3b6',
   variable: GRAYS[100],
   invalid: '#ff427b',
+
+  // --- Syntax emphasis (additive slots; adapters opt in)
+  /**
+   * TS type assertions (`as`, `asserts`, `is`) — bold-emphasized text, so the
+   * APCA gate holds it to the Lc 45 emphasized-text tier. Opaque hex only:
+   * `calcAPCA` ignores alpha, so an alpha'd value would measure un-composited.
+   * VSCode-only today — Zed's syntax model has no assertion-specific key.
+   */
+  typeAssertion: ULTRAVIOLETS[100],
 
   // --- Backgrounds (Zed: editor.background, surface.background, etc.)
   bgPrimary: '#141322',

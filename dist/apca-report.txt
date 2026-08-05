@@ -1,6 +1,6 @@
 APCA contrast report (Bronze thresholds)
 
-PASS: 9/20
+PASS: 10/21
 
   ✗ comment                      Lc= 33.44  min=60  (need +26.56)
   ✓ constant                     Lc= 98.77  min=60
@@ -11,6 +11,7 @@ PASS: 9/20
   ✓ string                       Lc= 96.49  min=60
   ✗ support                      Lc= 55.21  min=60  (need +4.79)
   ✓ variable                     Lc= 79.62  min=60
+  ✓ typeAssertion                Lc= 47.55  min=45
   ✓ fgPrimary                    Lc= 79.62  min=75
   ✗ fgMuted                      Lc= 58.27  min=60  (need +1.73)
   ✗ aiCompletionPreview          Lc= 21.87  min=30  (need +8.13)

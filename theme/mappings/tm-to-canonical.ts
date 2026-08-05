@@ -98,8 +98,8 @@ export const TM_TO_CANONICAL: Record<string, ZedSyntaxKey | VSCodeOnly> = {
   'variable.parameter': 'variable.parameter', // italic preserved by syntax adapter
   'variable.language': 'variable.special', // this/self/super → Zed variable.special
   'support.type': 'type',
-  'keyword.control.as': 'keyword', // bold/underline preserved by syntax adapter
-  'keyword.operator.type.asserts': 'operator', // bold preserved
+  'keyword.control.as': 'keyword', // ultraviolet emphasis is VSCode-only; Zed renders plain keyword (underline dropped, see utils/font-style.ts)
+  'keyword.operator.type.asserts': 'operator', // VSCode-only bold; Zed renders plain operator
   'keyword.operator.expression.is': 'operator',
   'entity.name.type': 'type', // italic preserved
 
