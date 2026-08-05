@@ -26,11 +26,11 @@ Open the Extensions panel, search **Radical Reborn**, and install.
 
 ### VSCode (.vsix)
 
-Download `radical-reborn-<version>.vsix` from the
+Download `radical-reborn.vsix` from the
 [latest release](https://github.com/AquaOctet/radical-reborn/releases) and install:
 
 ```sh
-code --install-extension radical-reborn-0.1.0.vsix
+code --install-extension radical-reborn.vsix
 ```
 
 Or in VSCode: Extensions panel → `⋯` menu → **Install from VSIX…**.
