@@ -10,17 +10,24 @@ When a published Zed Extensions version is broken (renders incorrectly, schema i
 | Registry version installed but cosmetic issue | Open a hotfix PR, ship as next patch version (don't downgrade) |
 | Registry version installed and unusable (no syntax highlighting, blank panels, etc.) | Downgrade — see below |
 | Registry version causes Zed to crash | Downgrade immediately, then triage |
+| "Font not applied / looks fuzzy" reports | **Not a release defect** — user-side config (`docs/solutions/2026-06-09-zed-font-not-applied-not-installed.md`); point at the README font section, never roll back |
 
-Downgrading takes the same ~12-24h as a forward release. If the issue is hours-fresh, an immediate hotfix PR usually beats a downgrade.
+Downgrade PRs are **human-reviewed** — prefix the title `Rollback: ` and expect hours-to-days (only routine version *bumps* auto-merge via `zed-zippy[bot]`, ~25 min observed). If the issue is hours-fresh, an immediate hotfix patch through the normal tag-push pipeline usually beats a downgrade.
 
 ## Downgrade flow
+
+**Primary path:** dispatch the **"Zed bump (manual)"** workflow (Actions tab) with the last-good tag — it opens the downgrade PR with the same guard + action the release pipeline uses. Then comment/retitle the PR with the `Rollback: ` prefix by hand (the action templates its own title).
 
 ```bash
 # Identify the last known good tag in our repo
 git tag --list 'v*' --sort=-v:refname | head -5
-# Pick the previous version (e.g. v0.1.0)
+gh workflow run zed-bump-manual.yml -f tag=v<GOOD VERSION>
+```
 
-# In your zed-industries/extensions fork:
+**Fallback path** (workflow unavailable) — by hand in the machine account's fork:
+
+```bash
+# In the aquaoctet-bot/extensions fork:
 cd zed-extensions
 git fetch upstream
 git checkout -b rollback/radical-reborn-theme-to-<GOOD VERSION> upstream/main
@@ -76,13 +83,28 @@ git push -u origin hotfix/<short-description>
 # Open PR, merge, follow release runbook with patch bump
 ```
 
-The hotfix patch will arrive in the registry on the same ~12-24h cycle, but you avoid the version-number-going-backwards confusion that downgrades create for installed users.
+The hotfix patch ships through the normal tag-push pipeline; its Zed bump PR auto-merges via `zed-zippy[bot]` (~25 min observed) — usually faster than a human-reviewed downgrade, and you avoid the version-number-going-backwards confusion that downgrades create for installed users.
+
+## Open VSX
+
+**There is no unpublish.** Open VSX versions are immutable and self-serve removal does not exist — the policy is **publish-fixed-version-forward**: bump patch, ship through the pipeline, the new version becomes `latest`. If the shipped version is actively malicious (compromised pipeline, not just broken), contact the Open VSX admins to request removal AND rotate credentials per `docs/runbooks/release.md` §9. Users who installed the broken version get the fix on their next update check.
+
+## GitHub Release
+
+- Annotate, never delete: update the broken release's notes with what failed and a link to the fix.
+- Repoint the **latest** marker at the last good release so the README's "latest release" link serves a working `.vsix` while the fix builds:
+
+```bash
+gh release edit v<GOOD VERSION> --latest
+# after the fixed release ships:
+gh release edit v<FIXED VERSION> --latest
+```
 
 ## Communication
 
-- Update the GitHub release notes for the broken tag with a brief explanation and link to the rollback PR
+- Update the GitHub release notes for the broken tag with a brief explanation and link to the rollback PR (see the `--latest` repoint above)
 - If a user-facing channel exists (README install instructions, Discord, etc.), pin a notice
-- Don't delete the broken tag — it's a record. Just don't reference it from the registry.
+- Don't delete the broken tag — it's a record (and the downgrade flow checks out by tag). Just don't reference it from the registry.
 
 ## After rollback / hotfix
 
