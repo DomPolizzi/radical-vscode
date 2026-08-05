@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: release
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Full history: the ancestor-of-main guard needs exact ancestry
           # (shallow grafts make merge-base flaky). Repo is tiny.
@@ -156,7 +156,7 @@ jobs:
     steps:
       # Checkout MUST precede the artifact download — checkout cleans the
       # workspace and would delete a pre-downloaded .vsix.
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
