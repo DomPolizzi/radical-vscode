@@ -9,3 +9,8 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # One combined PR per interval instead of one per action — the
+    # upload/download-artifact pair must land together anyway.
+    groups:
+      github-actions:
+        patterns: ["*"]
