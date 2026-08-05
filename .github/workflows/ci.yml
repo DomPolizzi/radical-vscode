@@ -34,5 +34,13 @@ jobs:
       - name: APCA contrast check
         run: npm run check:contrast
 
+      # Split-brain gate: the committed dist/, themes/, and extension.toml must
+      # match what the source just built — Zed's registry serves the committed
+      # files while the .vsix ships a fresh build. Placed AFTER the contrast
+      # step because check:contrast is the only writer of dist/apca-report.txt.
+      # Keep in sync with the release gates (.github/workflows/release.yml).
+      - name: Committed artifacts match source
+        run: npm run check:drift
+
       - name: Tests
         run: npm test

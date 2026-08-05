@@ -39,6 +39,7 @@
     "build:vscode": "tsx theme/vscode/build.ts",
     "build:zed": "tsx theme/zed/build.ts",
     "check:contrast": "tsx theme/apca-check.ts",
+    "check:drift": "git diff --exit-code dist/ themes/ extension.toml",
     "format": "prettier --write '**/*.{md,ts,json}'",
     "lint": "eslint theme",
     "test": "vitest run",
