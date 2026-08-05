@@ -68,7 +68,8 @@ If snapshots changed intentionally: `npx vitest run -u`, review the diff careful
 git add package.json package-lock.json extension.toml dist/ themes/ tests/__snapshots__/ CHANGELOG.md
 git commit -m "release: v<NEW VERSION>"
 git push origin main                          # tag must land on main BEFORE the tag push
-git tag -a "v<NEW VERSION>" -m "<paste the CHANGELOG section>"
+git tag -a "v<NEW VERSION>" --cleanup=verbatim -m "<paste the CHANGELOG section>"
+# --cleanup=verbatim: without it git strips the markdown "###" headers as comments
 git for-each-ref refs/tags/v<NEW VERSION> --format='%(objecttype)'   # must print: tag (annotated)
 git push origin "v<NEW VERSION>"              # ← this fires the release pipeline
 ```
